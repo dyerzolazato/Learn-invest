@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Investasi Interaktif - Uji Pengetahuan Anda!</title>
+    <!-- Preload Poppins font for better performance -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLCz7Z1xlEA.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Favicon (Quiz specific) -->
+    <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+    <!-- Link ke file CSS eksternal -->
+    <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" aria-label="Memuat kuis">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main Quiz Container -->
+    <div id="quiz-app" class="quiz-app page active">
+        <!-- Quiz Header -->
+        <header class="quiz-header">
+            <button id="back-to-home-btn" class="nav-button" aria-label="Kembali ke Beranda">
+                <i class="fas fa-arrow-left"></i> Beranda
+            </button>
+            <div class="quiz-title-area">
+                <h1 id="quiz-main-title">Kuis Investasi</h1>
+                <span id="current-mode-display" class="current-mode-tag">Mode: Pilih Mode</span>
+            </div>
+            <div class="header-right-controls">
+                <!-- Tombol Pengaturan -->
+                <button class="header-control-btn" id="settings-btn" aria-label="Pengaturan Kuis"><i class="fas fa-cog"></i></button>
+            </div>
+        </header>
+
+        <!-- Quiz Sections -->
+        <main class="quiz-main-content">
+
+            <!-- Mode Selection Screen -->
+            <section id="mode-selection-screen" class="quiz-screen active">
+                <div class="screen-header">
+                    <i class="fas fa-gamepad screen-icon"></i>
+                    <h2>Pilih Mode Kuis</h2>
+                    <p>Pilih tingkat kesulitan yang sesuai dengan pengetahuan Anda.</p>
+                </div>
+                <div class="mode-cards-container">
+                    <div class="mode-card" data-mode="beginner">
+                        <h3><i class="fas fa-seedling"></i> Beginner Mode</h3>
+                        <p>Soal dasar, cocok untuk pemula. Koreksi langsung.</p>
+                        <span class="mode-difficulty beginner">Mudah</span>
+                        <button class="start-mode-btn" aria-label="Mulai Beginner Mode">Mulai</button>
+                    </div>
+                    <div class="mode-card" data-mode="intermediate">
+                        <h3><i class="fas fa-brain"></i> Intermediate Mode</h3>
+                        <p>Soal menengah, tingkatkan pemahaman Anda. Koreksi langsung.</p>
+                        <span class="mode-difficulty intermediate">Sedang</span>
+                        <button class="start-mode-btn" aria-label="Mulai Intermediate Mode">Mulai</button>
+                    </div>
+                    <div class="mode-card" data-mode="expert">
+                        <h3><i class="fas fa-star"></i> Expert Mode</h3>
+                        <p>Soal sulit, satu kesalahan berarti restart. Untuk ahli!</p>
+                        <span class="mode-difficulty expert">Sulit</span>
+                        <button class="start-mode-btn" aria-label="Mulai Expert Mode">Mulai</button>
+                    </div>
+                    <div class="mode-card" data-mode="speedrun">
+                        <h3><i class="fas fa-stopwatch"></i> Speedrun Mode</h3>
+                        <p>Waktu terbatas, kecepatan dan akurasi adalah kunci. Skor tinggi!</p>
+                        <span class="mode-difficulty speedrun">Waktu</span>
+                        <button class="start-mode-btn" aria-label="Mulai Speedrun Mode">Mulai</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Play Screen -->
+            <section id="quiz-play-screen" class="quiz-screen">
+                <div class="quiz-progress-area">
+                    <span id="question-counter">Soal 1/10</span>
+                    <div class="progress-bar-container">
+                        <div id="quiz-progress-bar" class="progress-bar"></div>
+                    </div>
+                    <span id="timer-display" class="timer-display" style="display: none;">00:15</span>
+                </div>
+
+                <div class="question-card">
+                    <h3 id="question-text">Pertanyaan akan muncul di sini.</h3>
+                    <div id="answer-options" class="answer-options">
+                        <!-- Answer options will be dynamically loaded here -->
+                    </div>
+                    <div class="quiz-feedback" id="quiz-feedback">
+                        <!-- Feedback for answers -->
+                    </div>
+                    <div class="quiz-actions">
+                        <button id="next-question-btn" class="action-btn next-btn" style="display: none;">Lanjut <i class="fas fa-arrow-right"></i></button>
+                        <button id="submit-answer-btn" class="action-btn submit-btn">Kirim Jawaban <i class="fas fa-paper-plane"></i></button>
+                    </div>
+                    <div class="lifelines-container">
+                        <button class="lifeline-btn" id="hint-btn" data-lifeline="hint" aria-label="Dapatkan petunjuk (3 tersisa)">
+                            <i class="fas fa-lightbulb"></i> <span class="lifeline-text">Petunjuk</span> (<span id="hint-count">3</span>)
+                        </button>
+                        <button class="lifeline-btn" id="fifty-fifty-btn" data-lifeline="50-50" aria-label="Gunakan 50:50">
+                            <i class="fas fa-divide"></i> <span class="lifeline-text">50:50</span> (<span id="fifty-fifty-count">1</span>)
+                        </button>
+                        <button class="lifeline-btn" id="skip-btn" data-lifeline="skip" aria-label="Lewati pertanyaan (1 tersisa)">
+                            <i class="fas fa-forward"></i> <span class="lifeline-text">Lewati</span> (<span id="skip-count">1</span>)
+                        </button>
+                        <button class="lifeline-btn" id="ask-ai-btn" data-lifeline="ask-ai" aria-label="Tanya AI (Cooldown)">
+                            <i class="fas fa-robot"></i> <span class="lifeline-text">Tanya AI</span> (<span id="ask-ai-cooldown">Siap</span>)
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Result Screen -->
+            <section id="quiz-result-screen" class="quiz-screen">
+                <div class="screen-header">
+                    <i class="fas fa-trophy screen-icon"></i>
+                    <h2 id="result-title">Hasil Kuis Anda!</h2>
+                    <p id="result-message">Anda telah menyelesaikan kuis.</p>
+                </div>
+                <div class="result-summary-card">
+                    <div class="result-item">
+                        <span>Total Soal:</span> <span id="total-questions-result">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Jawaban Benar:</span> <span id="correct-answers-result">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Jawaban Salah:</span> <span id="incorrect-answers-result">0</span>
+                    </div>
+                    <div class="result-item speedrun-only" style="display: none;">
+                        <span>Skor Akhir:</span> <span id="final-score-result">0</span>
+                    </div>
+                    <div class="result-item speedrun-only" style="display: none;">
+                        <span>Waktu Total:</span> <span id="total-time-result">0s</span>
+                    </div>
+                    <div class="result-item expert-only" style="display: none;">
+                        <span>Streak Benar:</span> <span id="correct-streak-result">0</span>
+                    </div>
+                </div>
+
+                <div class="result-actions">
+                    <button id="review-answers-btn" class="action-btn primary-btn" style="display: none;">
+                        <i class="fas fa-eye"></i> Tinjau Jawaban
+                    </button>
+                    <button id="play-again-btn" class="action-btn primary-btn">
+                        <i class="fas fa-redo-alt"></i> Main Lagi
+                    </button>
+                    <button id="back-to-modes-btn" class="action-btn secondary-btn">
+                        <i class="fas fa-list"></i> Pilih Mode Lain
+                    </button>
+                </div>
+
+                <!-- Gamification Elements -->
+                <div class="gamification-section">
+                    <h3>Pencapaian Anda</h3>
+                    <div class="achievement-display">
+                        <div class="xp-bar-container">
+                            <span class="xp-label">XP: <span id="current-xp">0</span> / <span id="next-level-xp">100</span></span>
+                            <div class="xp-bar-fill" id="xp-bar-fill"></div>
+                            <span class="level-display">Level <span id="current-level">1</span></span>
+                        </div>
+                        <div class="badges-container" id="achievement-badges">
+                            <!-- Badges will be loaded here -->
+                        </div>
+                        <div class="streak-display">
+                            <span>Streak Jawaban Benar: <span id="global-streak">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard (Placeholder) -->
+                <div class="leaderboard-section">
+                    <h3>Leaderboard</h3>
+                    <ul id="leaderboard-list">
+                        <!-- Leaderboard items will be loaded here -->
+                        <li><i class="fas fa-medal gold"></i> Anda: <span id="my-leaderboard-score">N/A</span></li>
+                        <li><i class="fas fa-medal silver"></i> Pemain 1: 1500</li>
+                        <li><i class="fas fa-medal bronze"></i> Pemain 2: 1200</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Answer Review Screen -->
+            <section id="answer-review-screen" class="quiz-screen">
+                <div class="screen-header">
+                    <i class="fas fa-clipboard-check screen-icon"></i>
+                    <h2>Tinjau Jawaban Anda</h2>
+                    <p>Lihat kembali pertanyaan dan penjelasan lengkapnya.</p>
+                </div>
+                <div id="review-questions-container">
+                    <!-- Reviewed questions will be loaded here -->
+                </div>
+                <button id="back-from-review-btn" class="action-btn primary-btn">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Hasil
+                </button>
+            </section>
+
+            <!-- Modals for Lifelines and other features -->
+            <!-- Hint Modal -->
+            <div id="hint-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="hint-modal-title">
+                <div class="modal-content">
+                    <button class="modal-close-btn" aria-label="Tutup petunjuk"><i class="fas fa-times"></i></button>
+                    <h2 id="hint-modal-title"><i class="fas fa-lightbulb"></i> Petunjuk</h2>
+                    <p id="hint-text"></p>
+                    <button class="action-btn primary-btn" id="close-hint-modal-btn">Oke</button>
+                </div>
+            </div>
+
+            <!-- Ask AI Modal -->
+            <div id="ask-ai-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="ask-ai-modal-title">
+                <div class="modal-content">
+                    <button class="modal-close-btn" aria-label="Tutup bantuan AI"><i class="fas fa-times"></i></button>
+                    <h2 id="ask-ai-modal-title"><i class="fas fa-robot"></i> Tanya AlgoVest AI</h2>
+                    <p id="ai-response-text">AI sedang berpikir...</p>
+                    <div class="ai-loading-spinner" style="display: none;">
+                        <div class="spinner"></div>
+                    </div>
+                    <button class="action-btn primary-btn" id="close-ask-ai-modal-btn">Oke</button>
+                </div>
+            </div>
+
+            <!-- Custom Alert/Confirm Modal -->
+            <div id="custom-alert-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="custom-alert-title">
+                <div class="modal-content">
+                    <h2 id="custom-alert-title">Peringatan!</h2>
+                    <p id="custom-alert-message"></p>
+                    <div class="modal-actions">
+                        <button class="action-btn primary-btn" id="custom-alert-ok-btn">Oke</button>
+                        <button class="action-btn secondary-btn" id="custom-alert-cancel-btn" style="display: none;">Batal</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Modal (Baru ditambahkan) -->
+            <div id="settings-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+                <div class="modal-content">
+                    <button class="modal-close-btn" aria-label="Tutup pengaturan"><i class="fas fa-times"></i></button>
+                    <h2 id="settings-modal-title"><i class="fas fa-cog"></i> Pengaturan</h2>
+                    <div class="settings-section">
+                        <h3>Opsi Umum</h3>
+                        <div class="setting-item">
+                            <label for="font-size-select">Ukuran Font:</label>
+                            <select id="font-size-select">
+                                <option value="small">Kecil</option>
+                                <option value="medium" selected>Sedang</option>
+                                <option value="large">Besar</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="theme-select">Tema:</label>
+                            <select id="theme-select">
+                                <option value="dark" selected>Gelap</option>
+                                <option value="light">Terang (Segera Hadir)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="sound-effects-toggle">Efek Suara:</label>
+                            <input type="checkbox" id="sound-effects-toggle" checked>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h3>Data & Privasi</h3>
+                        <div class="setting-item">
+                            <button class="action-btn secondary-btn" id="reset-progress-btn">
+                                <i class="fas fa-sync-alt"></i> Reset Progres Kuis
+                            </button>
+                        </div>
+                        <p class="setting-description">Ini akan menghapus semua progres XP, level, dan badge Anda.</p>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="action-btn primary-btn" id="save-settings-btn">
+                            <i class="fas fa-save"></i> Simpan Pengaturan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Kuis Investasi. All rights reserved. By Erdyon.</p>
+        </footer>
+    </div>
+
+    <!-- Link ke file JavaScript eksternal -->
+    <script src="quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlgoVest AI - Rekomendasi Investasi Cerdas</title>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    <style>
+        /* CSS Variables */
+        :root {
+            --color-black: #000000;
+            --color-white: #FFFFFF;
+            --color-grey: #888888;
+            --color-dark-grey: #1a1a1a;
+            --color-accent: #00D2A0; /* Green Mint */
+            --color-accent-dark: #00A07A;
+            --color-gradient-start: #00D2A0;
+            --color-gradient-end: #007ACC; /* Blue */
+            --border-radius-card: 12px;
+            --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --transition-duration: 0.3s;
+            --max-width-content: 960px;
+            --padding-section: 60px;
+
+            /* AlgoVest AI specific colors */
+            --ai-bg-light: #2c2c2c;
+            --ai-bg-dark: #1e1e1e;
+            --ai-text-light: #f0f0f0;
+            --ai-text-dark: #c0c0c0;
+            --ai-button-hover: #00ffc8;
+            --ai-bar-fill: linear-gradient(to right, var(--color-accent), var(--color-gradient-end));
+            --ai-bar-bg: rgba(255, 255, 255, 0.1);
+
+            /* Character specific colors */
+            --char-body: #66BB6A; /* Softer green */
+            --char-face: #9CCC65; /* Lighter green for face */
+            --char-eye-white: #FFFFFF;
+            --char-eye-pupil: #42A5F5; /* Brighter blue pupil */
+            --char-mouth: #FF8A65; /* Orange-pink for mouth */
+            --char-antenna-tip: #FFEB3B; /* Bright yellow */
+            --char-shadow: rgba(0, 210, 160, 0.6);
+            --char-highlight: rgba(255, 255, 255, 0.5); /* For eye sparkle */
+            --char-money-logo: #FFD700; /* Gold for money logo */
+
+            /* New Toast for Wise Quotes */
+            --toast-wise-bg: rgba(30, 30, 30, 0.95); /* Slightly transparent dark background */
+            --toast-wise-text: var(--color-white); /* White text for readability */
+            --toast-wise-border: 1px solid var(--color-accent); /* Accent border */
+            --toast-wise-icon: var(--color-accent); /* Accent icon color */
+            --toast-wise-shadow: 0 8px 25px rgba(0, 210, 160, 0.5); /* Soft, glowing shadow */
+
+            /* Export Buttons */
+            --export-button-bg: #4CAF50;
+            --export-button-hover: #45a049;
+            --export-button-text: white;
+            --export-button-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-dark-grey);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-accent-dark);
+            border-radius: 10px;
+            transition: background var(--transition-duration);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-accent);
+        }
+        /* Firefox scrollbar */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-accent-dark) var(--color-dark-grey);
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-black);
+            color: var(--ai-text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: 1em;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--transition-duration);
+        }
+
+        a:hover {
+            color: var(--color-accent-dark);
+            text-decoration: underline;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--color-white);
+            margin-bottom: 0.8em;
+            font-weight: 700;
+        }
+
+        h1 { font-size: 3.5em; font-weight: 700; text-shadow: 0 0 15px rgba(0, 210, 160, 0.5); }
+        h2 { font-size: 2em; font-weight: 600; color: var(--color-accent); }
+        h3 { font-size: 1.5em; font-weight: 500; color: var(--ai-text-light); }
+        p { font-size: 1em; color: var(--ai-text-dark); }
+
+        .container {
+            max-width: var(--max-width-content);
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-grow: 1; /* Allow container to grow */
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-dark-grey), var(--color-black));
+            padding: var(--padding-section) 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--color-accent-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(0,210,160,0.1) 0%, rgba(0,122,204,0.05) 50%, transparent 70%);
+            animation: rotate-bg 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes rotate-bg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        header h1, header p, header a, .algovest-character {
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--color-dark-grey);
+            color: var(--color-white);
+            padding: 10px 15px;
+            border-radius: var(--border-radius-card);
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Enhanced transition */
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .back-button:hover {
+            background-color: var(--color-accent); /* Change to accent color on hover */
+            color: var(--color-black); /* Text color changes to black */
+            transform: translateY(-3px) scale(1.02); /* More pronounced lift and slight scale */
+            box-shadow: 0 6px 15px rgba(0, 210, 160, 0.4); /* Enhanced shadow */
+        }
+
+        .back-button i {
+            transition: transform 0.3s ease; /* Smooth icon movement */
+        }
+
+        .back-button:hover i {
+            transform: translateX(-3px); /* Move icon slightly left on hover */
+        }
+
+        /* AlgoVest Character Styles */
+        .algovest-character {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite alternate;
+            cursor: pointer; /* Indicate interactivity */
+            touch-action: manipulation; /* Improve touch responsiveness */
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* Click/Tap Animation */
+        .algovest-character.interacted {
+            animation: character-bounce 0.5s ease-out;
+        }
+
+        @keyframes character-bounce {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+
+        .algovest-character .body-main {
+            fill: var(--char-body);
+            stroke: var(--color-accent);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 8px var(--char-shadow));
+        }
+
+        .algovest-character .face {
+            fill: var(--char-face);
+            stroke: var(--color-accent);
+            stroke-width: 1.5;
+        }
+
+        .algovest-character .eye-white {
+            fill: var(--char-eye-white);
+        }
+
+        .algovest-character .eye-pupil {
+            fill: var(--char-eye-pupil);
+            animation: blink 4s infinite step-end; /* Adjusted for smoother blink */
+            transform-origin: center; /* Ensure blink scales from center */
+        }
+        .algovest-character .eye-sparkle {
+            fill: var(--char-highlight);
+        }
+
+        /* Refined Blink Animation */
+        @keyframes blink {
+            0%, 48%, 52%, 100% { transform: scaleY(1); } /* Eyes open */
+            50% { transform: scaleY(0.1); } /* Quick blink */
+        }
+
+        .algovest-character .mouth-shape { /* Changed class name to distinguish from general 'mouth' */
+            fill: var(--char-mouth);
+            transform-origin: 50% 50%; /* Set origin for scaling */
+            animation: none; /* Default to no animation */
+        }
+
+        /* New Mouth Talk Animation */
+        .algovest-character .mouth-talking {
+            animation: talk-mouth 0.5s infinite alternate;
+        }
+
+        @keyframes talk-mouth {
+            0% { transform: scaleY(1); }
+            50% { transform: scaleY(0.5); }
+            100% { transform: scaleY(1); }
+        }
+
+
+        .algovest-character .antenna-line {
+            stroke: var(--color-white);
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .algovest-character .antenna-tip {
+            fill: var(--char-antenna-tip);
+            animation: glow-tip 1.5s infinite alternate;
+        }
+
+        @keyframes glow-tip {
+            0% { opacity: 0.7; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Money Logo on Chest */
+        .algovest-character .money-logo-circle {
+            fill: var(--char-money-logo);
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+        }
+        .algovest-character .money-logo-text {
+            fill: var(--color-black); /* Text on coin should be dark */
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+        /* Adjusted money logo position and size */
+        .algovest-character .money-logo-text {
+            font-size: 10px; /* Smaller font size for better fit */
+        }
+
+
+        .ai-section {
+            padding: var(--padding-section) 0;
+            background-color: var(--color-black);
+        }
+
+        .ai-card {
+            background-color: var(--ai-bg-dark);
+            border-radius: var(--border-radius-card);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid var(--color-dark-grey);
+        }
+
+        .ai-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .ai-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--ai-text-light);
+        }
+
+        .ai-form input[type="text"],
+        .ai-form input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--color-grey);
+            background-color: var(--color-dark-grey);
+            color: var(--ai-text-light);
+            font-size: 1em;
+            margin-bottom: 25px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .ai-form input[type="text"]:focus,
+        .ai-form input[type="number"]:focus {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(0, 210, 160, 0.2);
+        }
+
+        /* Validation feedback styles */
+        .ai-form input.error-input,
+        .ai-form .risk-profile-options.error-input .risk-profile-option {
+            border-color: #dc3545 !important; /* Red for error */
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2) !important;
+        }
+        .ai-form .error-message {
+            color: #dc3545;
+            font-size: 0.85em;
+            margin-top: -20px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+
+        .risk-profile-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .risk-profile-option {
+            flex: 1;
+            min-width: 150px; /* Minimum width for each option */
+            max-width: 200px;
+            background-color: var(--color-dark-grey);
+            border: 2px solid var(--color-dark-grey);
+            border-radius: var(--border-radius-card);
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .risk-profile-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .risk-profile-option span {
+            display: block;
+            font-weight: 600;
+            color: var(--ai-text-light);
+            margin-bottom: 5px;
+        }
+
+        .risk-profile-option p {
+            font-size: 0.85em;
+            color: var(--ai-text-dark);
+        }
+
+        .risk-profile-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            border-color: var(--color-accent);
+        }
+
+        .risk-profile-option.selected {
+            background: linear-gradient(45deg, var(--color-accent), var(--color-gradient-end));
+            color: var(--color-black);
+            border-color: var(--color-white);
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(0, 210, 160, 0.5);
+        }
+
+        .risk-profile-option.selected span,
+        .risk-profile-option.selected p {
+            color: var(--color-black); /* Ensure text is black when selected */
+        }
+
+        .risk-profile-option::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0);
+            border-radius: 50%;
+            opacity: 0;
+            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        }
+
+        .risk-profile-option:hover::after {
+            transform: scale(1);
+            opacity: 1;
+            z-index: -1;
+        }
+
+        .ai-form button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-gradient-end));
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--border-radius-card);
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 210, 160, 0.3);
+        }
+
+        .ai-form button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 210, 160, 0.5);
+            background: linear-gradient(90deg, var(--color-accent-dark), #006BB3); /* Slightly darker gradient on hover */
+        }
+
+        .ai-form button[type="submit"]:disabled {
+            background: var(--color-grey);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Portfolio Result Section */
+        #portfolio-result {
+            background-color: var(--ai-bg-dark);
+            border-radius: var(--border-radius-card);
+            padding: 40px;
+            margin-top: 40px;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid var(--color-dark-grey);
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        #portfolio-result.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #portfolio-result h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #portfolio-result p.summary {
+            text-align: center;
+            color: var(--ai-text-dark);
+            margin-bottom: 30px;
+            font-size: 1.05em;
+        }
+
+        .portfolio-allocation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .portfolio-allocation-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            color: var(--ai-text-light);
+            background-color: var(--ai-bg-light);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap; /* Allow wrapping for description */
+        }
+
+        .portfolio-allocation-list li strong {
+            flex-basis: 150px; /* Fixed width for asset name */
+            flex-shrink: 0;
+            color: var(--color-accent);
+            text-shadow: 0 0 5px rgba(0, 210, 160, 0.2);
+        }
+
+        .portfolio-bar-container {
+            flex-grow: 1;
+            height: 20px;
+            background-color: var(--ai-bar-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: 20px;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .portfolio-bar {
+            height: 100%;
+            background: var(--ai-bar-fill);
+            border-radius: 10px;
+            transition: width 1.5s ease-out; /* Animation for bar fill */
+            width: 0%; /* Initial state for animation */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: shine 2s infinite linear;
+            opacity: 0.5;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+
+        .portfolio-percentage {
+            margin-left: 15px;
+            font-weight: 700;
+            color: var(--color-accent);
+            min-width: 50px; /* Ensure space for percentage */
+            text-align: right;
+            text-shadow: 0 0 5px rgba(0, 210, 160, 0.3);
+        }
+
+        .portfolio-allocation-list li p.description {
+            font-size: 0.9em;
+            color: var(--ai-text-dark);
+            margin-top: 5px;
+            margin-left: 150px; /* Align with asset name */
+            flex-basis: 100%; /* Take full width */
+        }
+
+        .financial-breakdown {
+            background-color: var(--ai-bg-light);
+            border-radius: var(--border-radius-card);
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .financial-breakdown h3 {
+            color: var(--color-accent);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .financial-breakdown ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .financial-breakdown ul li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--color-dark-grey);
+            color: var(--ai-text-light);
+        }
+
+        .financial-breakdown ul li:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--color-white);
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .disclaimer {
+            font-size: 0.8em;
+            color: var(--color-grey);
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--color-dark-grey);
+        }
+
+        /* Toast Notification (specific styles for wise quotes) */
+        #toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background-color: var(--color-dark-grey);
+            color: var(--color-white);
+            padding: 15px 25px;
+            border-radius: var(--border-radius-card);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s; /* Faster transition */
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 280px;
+            max-width: 90%;
+            text-align: left; /* Default to left for general toasts */
+        }
+        #toast-notification.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* Wise Quote Toast Specifics */
+        #toast-notification.wise-quote {
+            background: var(--toast-wise-bg);
+            color: var(--toast-wise-text);
+            border: var(--toast-wise-border);
+            box-shadow: var(--toast-wise-shadow); /* Stronger glow */
+            font-style: italic; /* Make quotes stand out */
+            text-align: center; /* Center text for quotes */
+            padding: 20px 25px; /* More padding for comfort */
+        }
+
+        #toast-notification.wise-quote .toast-icon {
+            color: var(--toast-wise-icon);
+            font-size: 2em; /* Larger icon for quotes */
+            margin-right: 15px; /* Space between icon and text */
+        }
+        #toast-notification.wise-quote #toast-message {
+            font-size: 1.2em; /* Larger message font */
+            font-weight: 500;
+            line-height: 1.4; /* Better line spacing */
+        }
+
+
+        .toast-icon {
+            font-size: 1.5em;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-accent); /* Default icon color */
+        }
+
+        #toast-notification.success .toast-icon { color: #28a745; }
+        #toast-notification.error .toast-icon { color: #dc3545; }
+        #toast-notification.info .toast-icon { color: #007bff; }
+        #toast-notification.warning .toast-icon { color: #ffc107; }
+
+        #toast-message {
+            flex-grow: 1;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .toast-close-btn {
+            background: none;
+            border: none;
+            color: var(--color-grey);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            padding: 5px;
+        }
+        .toast-close-btn:hover {
+            color: var(--color-white);
+        }
+
+        /* Export Buttons Container (within portfolio-result) */
+        .export-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--color-dark-grey);
+        }
+
+        .export-buttons button {
+            background-color: var(--export-button-bg);
+            color: var(--export-button-text);
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius-card);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--export-button-shadow);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .export-buttons button:hover {
+            background-color: var(--export-button-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .export-buttons button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Exported Media Display */
+        .exported-media-container {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: var(--ai-bg-dark); /* Dark background for consistency */
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid var(--color-dark-grey);
+            text-align: center;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .exported-media-container.show {
+            display: flex;
+        }
+
+        .exported-media-container h3 {
+            color: var(--color-accent);
+            margin-bottom: 15px;
+        }
+
+        #exported-image {
+            max-width: 800px;
+            width: 100%; /* Responsive */
+            height: auto; /* Maintain aspect ratio */
+            border: 2px solid var(--color-accent); /* Mint green border */
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #exported-image:hover {
+            border-color: var(--color-accent-dark); /* Darker mint on hover */
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        #exported-pdf-iframe {
+            width: 100%;
+            height: 600px; /* Fixed height for desktop */
+            border: 1px solid #444; /* Thin dark border */
+            border-radius: 12px;
+            background-color: #1e1e1e; /* Dark background */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive adjustments for PDF iframe height */
+        @media (max-width: 768px) {
+            #exported-pdf-iframe {
+                height: 400px; /* Shorter height for mobile */
+            }
+        }
+
+        .download-link {
+            background-color: #007bff; /* A nice blue for download links */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px; /* Space from the media */
+        }
+
+        .download-link:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Simulation Section Styles */
+        #investment-simulation {
+            background-color: var(--ai-bg-dark);
+            border-radius: var(--border-radius-card);
+            padding: 40px;
+            margin-top: 40px;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid var(--color-dark-grey);
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        #investment-simulation.show {
+            display: block;
+        }
+
+        #investment-simulation h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .simulation-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .simulation-option {
+            flex: 1;
+            min-width: 100px;
+            max-width: 150px;
+            background-color: var(--color-dark-grey);
+            border: 2px solid var(--color-dark-grey);
+            border-radius: var(--border-radius-card);
+            padding: 10px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .simulation-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .simulation-option span {
+            display: block;
+            font-weight: 600;
+            color: var(--ai-text-light);
+        }
+
+        .simulation-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            border-color: var(--color-accent);
+        }
+
+        .simulation-option.selected {
+            background: linear-gradient(45deg, var(--color-accent), var(--color-gradient-end));
+            color: var(--color-black);
+            border-color: var(--color-white);
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(0, 210, 160, 0.5);
+        }
+
+        .simulation-option.selected span {
+            color: var(--color-black);
+        }
+
+        /* Style for the simulation button */
+        #run-simulation-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, #007ACC, #0056b3); /* Blue gradient for simulation button */
+            color: var(--color-white);
+            border: none;
+            border-radius: var(--border-radius-card);
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 122, 204, 0.3);
+        }
+
+        #run-simulation-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 122, 204, 0.5);
+            background: linear-gradient(90deg, #0056b3, #003d80); /* Slightly darker blue gradient on hover */
+        }
+
+        #run-simulation-btn:disabled {
+            background: var(--color-grey);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+            opacity: 0.7;
+        }
+
+        /* Loading spinner for button */
+        #run-simulation-btn .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--color-white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+        #simulation-chart-container {
+            position: relative;
+            height: 400px; /* Fixed height for chart */
+            width: 100%;
+            margin-top: 30px;
+            background-color: #2c2c2c;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #simulation-results-summary {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            color: var(--ai-text-light);
+        }
+        #simulation-results-summary strong {
+            color: var(--color-accent);
+        }
+
+        /* New styles for numerical simulation results */
+        .numerical-simulation-results {
+            margin-top: 30px;
+            background-color: var(--ai-bg-light);
+            border-radius: var(--border-radius-card);
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.8s ease-out forwards;
+            display: none; /* Hidden by default */
+        }
+
+        .numerical-simulation-results.show {
+            display: block;
+        }
+
+        .numerical-simulation-results h3 {
+            color: var(--color-accent);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .numerical-simulation-results ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .numerical-simulation-results ul li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--color-dark-grey);
+            color: var(--ai-text-light);
+            font-size: 1.05em;
+        }
+
+        .numerical-simulation-results ul li:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--color-white);
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .numerical-simulation-results ul li span:last-child {
+            color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--color-grey);
+            font-size: 0.9em;
+            border-top: 1px solid var(--color-dark-grey);
+            margin-top: var(--padding-section);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5em; }
+            h2 { font-size: 1.8em; }
+            .back-button {
+                top: 15px;
+                left: 15px;
+                padding: 8px 12px;
+                font-size: 0.8em;
+            }
+            .ai-card {
+                padding: 30px;
+            }
+            .risk-profile-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            .risk-profile-option {
+                width: 90%;
+                max-width: 300px;
+            }
+            .portfolio-allocation-list li {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            .portfolio-allocation-list li strong {
+                margin-bottom: 5px;
+            }
+            .portfolio-bar-container {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            .portfolio-percentage {
+                margin-left: 0;
+                margin-top: 5px;
+                align-self: flex-end;
+            }
+            .portfolio-allocation-list li p.description {
+                margin-left: 0; /* Remove left margin for mobile */
+                text-align: left; /* Align text to left */
+            }
+            .algovest-character {
+                width: 100px;
+                height: 100px;
+            }
+            #toast-notification.wise-quote {
+                font-size: 0.9em;
+                padding: 12px 20px;
+                flex-direction: column; /* Stack icon and text on small screens */
+                gap: 10px;
+            }
+            #toast-notification.wise-quote .toast-icon {
+                font-size: 1.5em;
+                margin-right: 0;
+            }
+            #toast-notification.wise-quote #toast-message {
+                font-size: 0.9em;
+                text-align: center;
+            }
+            .export-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .export-buttons button {
+                width: 100%;
+            }
+            .download-link {
+                width: 100%;
+            }
+            .simulation-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            .simulation-option {
+                width: 90%;
+                max-width: 200px;
+            }
+            #simulation-chart-container {
+                height: 300px; /* Shorter height for mobile */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .ai-card {
+                padding: 20px;
+            }
+            .ai-form input[type="text"],
+            .ai-form input[type="number"] {
+                padding: 10px;
+            }
+            .ai-form button[type="submit"] {
+                padding: 12px;
+                font-size: 1em;
+            }
+            #toast-notification {
+                width: 95%;
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            .toast-icon {
+                font-size: 1.2em;
+            }
+        }
+
+        /* --- Export Specific Styles --- */
+        /* These styles are applied to the hidden #export-content-container */
+        .export-layout {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1e1e1e; /* Dark background */
+            color: #F0F0F0; /* Light text */
+            padding: 50px; /* Internal padding for the A4/1080x1920 layout */
+            box-sizing: border-box; /* Include padding in width/height */
+            line-height: 1.6;
+            width: 100%; /* Ensure it takes full width of its container (1080px logical width) */
+        }
+        .export-layout h2, .export-layout h3, .export-layout h4 {
+            color: #FFFFFF; /* White for main headings */
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .export-layout h2 { font-size: 2.5em; color: #00D2A0; } /* Accent for main title */
+        .export-layout h3 { font-size: 1.8em; color: #00D2A0; }
+        .export-layout h4 { font-size: 1.4em; color: #F0F0F0; margin-top: 20px; }
+        .export-layout p {
+            font-size: 1em;
+            color: #F0F0F0;
+            margin-bottom: 15px;
+        }
+        .export-layout .summary {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+        }
+
+        .export-section {
+            margin-bottom: 40px;
+            background-color: #2c2c2c; /* Slightly lighter dark for sections */
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .export-list {
+            list-style: none;
+            padding: 0;
+        }
+        .export-list-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1em;
+            background-color: #3a3a3a; /* Even lighter dark for list items */
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .export-asset-name {
+            flex-basis: 180px; /* Adjust width for asset name in export */
+            flex-shrink: 0;
+            color: #00D2A0; /* Mint green for asset names */
+            font-weight: 600;
+        }
+        .export-bar-container {
+            flex-grow: 1;
+            height: 18px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 9px;
+            overflow: hidden;
+            margin-left: 20px;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .export-bar {
+            height: 100%;
+            background: linear-gradient(to right, #00D2A0, #007ACC); /* Glow gradient */
+            border-radius: 9px;
+            /* Glow effect */
+            box-shadow: 0 0 10px rgba(0, 210, 160, 0.7), /* Mint glow */
+                        0 0 20px rgba(0, 122, 204, 0.5); /* Blue glow */
+        }
+        .export-percentage {
+            margin-left: 15px;
+            font-weight: 700;
+            color: #00D2A0; /* Mint green for percentage */
+            min-width: 50px;
+            text-align: right;
+        }
+        .export-description {
+            font-size: 0.9em;
+            color: #c0c0c0; /* Darker grey for descriptions */
+            margin-top: 8px;
+            margin-left: 180px; /* Align with asset name */
+            flex-basis: 100%;
+        }
+        .export-description strong {
+            color: #FFFFFF; /* Make bold text stand out */
+        }
+        .export-description i {
+            color: #888888; /* Lighter grey for italic text */
+        }
+
+        .export-financial-breakdown {
+            background-color: #2c2c2c;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .export-financial-breakdown ul {
+            list-style: none;
+            padding: 0;
+        }
+        .export-financial-breakdown ul li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #444;
+            color: #F0F0F0;
+        }
+        .export-financial-breakdown ul li:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: #FFFFFF;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .export-disclaimer {
+            font-size: 0.8em;
+            color: #888888;
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #444;
+        }
+
+        /* Footer for export */
+        .export-footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8em;
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="book.htm" class="back-button" aria-label="Kembali ke Halaman Utama">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+        <!-- AlgoVest AI Character -->
+        <div class="algovest-character" id="algovest-character">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Body (Rounded Rectangle) -->
+                <rect x="20" y="30" width="60" height="50" rx="15" ry="15" class="body-main"/>
+                <!-- Head (Circle) -->
+                <circle cx="50" cy="35" r="25" class="body-main"/>
+                <!-- Face (Smaller circle for a cuter look) -->
+                <circle cx="50" cy="38" r="20" class="face"/>
+                <!-- Eyes (Larger, cuter) -->
+                <circle cx="40" cy="30" r="8" class="eye-white"/>
+                <circle cx="60" cy="30" r="8" class="eye-white"/>
+                <circle cx="40" cy="30" r="4" class="eye-pupil"/>
+                <circle cx="60" cy="30" r="4" class="eye-pupil"/>
+                <circle cx="38" cy="28" r="1.5" class="eye-sparkle"/>
+                <circle cx="58" cy="28" r="1.5" class="eye-sparkle"/>
+                <!-- Mouth (Happy smile) -->
+                <path id="algovest-mouth" d="M 40 45 Q 50 55 60 45" class="mouth-shape"/>
+                <!-- Antenna -->
+                <line x1="50" y1="5" x2="50" y2="15" class="antenna-line"/>
+                <circle cx="50" cy="5" r="5" class="antenna-tip"/>
+                <!-- Money Logo on Chest (Improved) -->
+                <g class="money-logo">
+                    <circle cx="50" cy="65" r="12" class="money-logo-circle"/>
+                    <text x="50" y="69" font-size="12" text-anchor="middle" class="money-logo-text">Rp</text>
+                </g>
+            </svg>
+        </div>
+        <h1>AlgoVest AI</h1>
+        <p>Rekomendasi Portofolio Investasi Cerdas untuk Anda</p>
+    </header>
+
+    <main class="container ai-section">
+        <div class="ai-card">
+            <h2>Dapatkan Rekomendasi Portofolio Anda</h2>
+            <form id="algovest-form" class="ai-form" novalidate> <!-- Added novalidate to prevent browser's default validation -->
+                <label for="age-input">Usia Anda:</label>
+                <input type="number" id="age-input" min="18" max="99" placeholder="Masukkan usia Anda (misal: 28)" required aria-required="true">
+                <span id="age-error" class="error-message"></span>
+
+                <label for="salary-input">Gaji Bulanan (Rp):</label>
+                <input type="text" id="salary-input" placeholder="Contoh: 5.000.000" required aria-required="true">
+                <span id="salary-error" class="error-message"></span>
+
+                <label>Pilih Profil Risiko Investasi Anda:</label>
+                <div class="risk-profile-options" role="radiogroup" aria-labelledby="risk-profile-label">
+                    <label class="risk-profile-option" tabindex="0">
+                        <input type="radio" name="risk-profile" value="konservatif" required aria-label="Profil Risiko Konservatif">
+                        <span>Konservatif</span>
+                        <p>Prioritas utama adalah keamanan modal, toleransi risiko rendah.</p>
+                    </label>
+                    <label class="risk-profile-option" tabindex="0">
+                        <input type="radio" name="risk-profile" value="moderat" aria-label="Profil Risiko Moderat">
+                        <span>Moderat</span>
+                        <p>Keseimbangan antara pertumbuhan dan keamanan, toleransi risiko sedang.</p>
+                    </label>
+                    <label class="risk-profile-option" tabindex="0">
+                        <input type="radio" name="risk-profile" value="agresif" aria-label="Profil Risiko Agresif">
+                        <span>Agresif</span>
+                        <p>Fokus pada pertumbuhan maksimal, toleransi risiko tinggi.</p>
+                    </label>
+                </div>
+                <span id="risk-profile-error" class="error-message"></span>
+
+                <button type="submit" id="generate-recommendation-btn">Lihat Rekomendasi</button>
+            </form>
+        </div>
+
+        <div id="portfolio-result" class="ai-card">
+            <h2 id="result-title"></h2>
+            <p id="result-summary" class="summary"></p>
+            <ul id="allocation-list" class="portfolio-allocation-list">
+                <!-- Portfolio items will be dynamically loaded here -->
+            </ul>
+            <div id="financial-breakdown" class="financial-breakdown">
+                <h3>Analisis Keuangan AlgoVest AI</h3>
+                <ul>
+                    <li>Gaji Bulanan: <span id="display-salary"></span></li>
+                    <li>Estimasi Biaya Hidup Bulanan: <span id="display-expenses"></span></li>
+                    <li>Dana Darurat Prioritas (jika belum cukup): <span id="display-emergency-fund-contribution"></span></li>
+                    <li>Total Dana Tabungan/Bank Bulanan yang Direkomendasikan: <span id="display-savings-for-bank-amount"></span></li>
+                    <li>Total Dana Investasi Bulanan yang Direkomendasikan: <span id="display-investment-amount"></span></li>
+                </ul>
+                <div id="investment-allocation-by-type">
+                    <h4>Alokasi Dana Investasi per Jenis Aset:</h4>
+                    <ul id="detailed-investment-breakdown">
+                        <!-- Detailed investment breakdown will be loaded here -->
+                    </ul>
+                </div>
+            </div>
+            <p class="disclaimer"><i>Rekomendasi ini bersifat umum dan hanya untuk tujuan edukasi. Selalu konsultasikan dengan perencana keuangan profesional sebelum membuat keputusan investasi.</i></p>
+
+            <!-- Export Buttons -->
+            <div class="export-buttons">
+                <button id="download-pdf-btn"><i class="fas fa-file-pdf"></i> Unduh PDF</button>
+                <button id="download-png-btn"><i class="fas fa-image"></i> Unduh PNG</button>
+            </div>
+        </div>
+
+        <!-- Investment Simulation Section -->
+        <div id="investment-simulation" class="ai-card">
+            <h2>Simulasi Pertumbuhan Investasi Jangka Panjang</h2>
+            <div class="simulation-options" role="radiogroup" aria-labelledby="simulation-duration-label">
+                <label class="simulation-option" tabindex="0">
+                    <input type="radio" name="simulation-duration" value="5" required aria-label="Simulasi 5 Tahun">
+                    <span>5 Tahun</span>
+                </label>
+                <label class="simulation-option" tabindex="0">
+                    <input type="radio" name="simulation-duration" value="10" aria-label="Simulasi 10 Tahun">
+                    <span>10 Tahun</span>
+                </label>
+                <label class="simulation-option" tabindex="0">
+                    <input type="radio" name="simulation-duration" value="20" aria-label="Simulasi 20 Tahun">
+                    <span>20 Tahun</span>
+                </label>
+            </div>
+            <button id="run-simulation-btn">Jalankan Simulasi</button>
+            <span id="simulation-error" class="error-message"></span>
+
+            <div id="simulation-chart-container">
+                <canvas id="investmentChart"></canvas>
+            </div>
+            <p id="simulation-results-summary"></p>
+
+            <!-- New section for numerical simulation results -->
+            <div id="numerical-simulation-results" class="numerical-simulation-results">
+                <h3>Ringkasan Hasil Simulasi</h3>
+                <ul>
+                    <li>Total Kontribusi Investasi: <span id="display-sim-total-contributions"></span></li>
+                    <li>Total Keuntungan (Return): <span id="display-sim-total-return"></span></li>
+                    <li>Saldo Akhir Investasi: <span id="display-sim-final-balance"></span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- New sections for displaying exported media -->
+        <div id="exported-image-container" class="exported-media-container">
+            <h3>Pratinjau Gambar Rekomendasi</h3>
+            <img id="exported-image" src="" alt="Rekomendasi Investasi AlgoVest AI" style="display: none;">
+            <a id="download-image-link" href="#" download="rekomendasi-algovest-ai.png" class="download-link" style="display: none;"><i class="fas fa-download"></i> Unduh Gambar</a>
+        </div>
+
+        <div id="exported-pdf-container" class="exported-media-container">
+            <h3>Pratinjau Dokumen Rekomendasi (PDF)</h3>
+            <iframe id="exported-pdf-iframe" style="display: none;"></iframe>
+            <a id="download-pdf-link-display" href="#" download="rekomendasi-algovest-ai.pdf" class="download-link" style="display: none;"><i class="fas fa-download"></i> Unduh PDF</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AlgoVest AI. All rights reserved. By Erdyon.</p>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" aria-live="polite" aria-atomic="true">
+        <div class="toast-icon"></div>
+        <span id="toast-message"></span>
+        <button class="toast-close-btn" aria-label="Tutup notifikasi"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Temporary hidden container for export content -->
+    <div id="export-content-container" style="position: absolute; left: -9999px; top: -9999px; width: 1080px; box-sizing: border-box;">
+        <!-- Content will be dynamically inserted here -->
+    </div>
+
+    <!-- Libraries for PDF/PNG Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Data rekomendasi portofolio berdasarkan usia dan profil risiko
+        // Algoritma ini dirancang untuk memberikan komposisi investasi yang cerdas
+        // berdasarkan kategori usia dan tingkat toleransi risiko pengguna.
+        // Setiap aset dijelaskan secara singkat untuk memberikan pemahaman lebih.
+        const portfolioData = {
+            'muda': { // Usia 18-30 tahun: Horizon investasi sangat panjang, potensi pemulihan tinggi.
+                'konservatif': {
+                    title: 'Portofolio Konservatif Jenius untuk Investor Muda',
+                    summary: 'Fokus utama adalah menjaga keamanan modal dan likuiditas, dengan pertumbuhan yang stabil namun terukur. AlgoVest AI merekomendasikan pendekatan ini untuk mitigasi risiko jangka panjang, bahkan di usia muda.',
+                    annualReturnRate: 0.06, // 6%
+                    allocation: [
+                        { asset: 'Obligasi Pemerintah (SBN Ritel)', percentage: 50, description: 'Sangat aman dan stabil, memberikan pendapatan tetap yang terjamin oleh negara, ideal untuk fondasi portofolio yang kokoh. **Take Profit:** Hold hingga jatuh tempo untuk pendapatan maksimal, atau jual jika ada kebutuhan mendesak dan suku bunga turun signifikan.' },
+                        { asset: 'Reksa Dana Pasar Uang Premium', percentage: 20, description: 'Likuiditas tinggi dan risiko sangat rendah, cocok untuk dana darurat atau tujuan jangka pendek yang membutuhkan akses cepat dengan imbal hasil yang dioptimalkan. **Take Profit:** Cairkan sesuai kebutuhan, tidak ada target profit spesifik karena fokus pada stabilitas.' },
+                        { asset: 'Saham Blue-Chip (Dividend Aristocrats)', percentage: 15, description: 'Perusahaan besar dengan fundamental kuat yang secara konsisten membayar dan meningkatkan dividen, memberikan stabilitas dan pertumbuhan pendapatan. **Take Profit:** Rebalancing jika porsi melebihi target alokasi (misal >20% dari total portofolio), atau jika valuasi menjadi sangat mahal (P/E Ratio jauh di atas rata-rata industri).' },
+                        { asset: 'Emas Fisik/Digital', percentage: 10, description: 'Aset lindung nilai yang cenderung stabil atau meningkat saat pasar bergejolak, menjaga daya beli dari inflasi dan ketidakpastian global. **Take Profit:** Jual sebagian jika harga naik signifikan (>20-30% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' },
+                        { asset: 'Dana Pensiun Obligasi', percentage: 5, description: 'Investasi jangka panjang dengan fokus pada obligasi, memberikan pertumbuhan konservatif untuk tujuan pensiun dini yang terencana. **Take Profit:** Umumnya hold jangka panjang, rebalancing tahunan untuk menjaga alokasi, bukan untuk take profit jangka pendek.' }
+                    ]
+                },
+                'moderat': {
+                    title: 'Portofolio Moderat Jenius untuk Investor Muda',
+                    summary: 'Mencari keseimbangan optimal antara pertumbuhan modal dan keamanan. Memanfaatkan horizon waktu yang panjang untuk pertumbuhan sambil menjaga stabilitas portofolio dengan diversifikasi dinamis dan fokus pada kualitas.',
+                    annualReturnRate: 0.10, // 10%
+                    allocation: [
+                        { asset: 'Saham Pertumbuhan (Pemimpin Teknologi, AI, Energi Hijau)', percentage: 35, description: 'Potensi pertumbuhan tinggi dari sektor yang dinamis dan inovatif, memanfaatkan waktu panjang untuk keuntungan maksimal melalui perusahaan disruptif dengan moat kuat. **Take Profit:** Pertimbangkan profit taking parsial (misal 20-30% dari posisi) jika saham naik >50% dalam waktu singkat, atau jika valuasi menjadi sangat mahal (P/E Ratio jauh di atas rata-rata historisnya).' },
+                        { asset: 'Obligasi Korporasi Peringkat Investasi (Diversifikasi Sektor)', percentage: 25, description: 'Memberikan pendapatan tetap yang lebih tinggi dari obligasi pemerintah dengan risiko terkontrol dari perusahaan solid dan terkemuka di berbagai sektor. **Take Profit:** Hold hingga jatuh tempo, atau jual jika spread yield menyempit drastis atau ada downgrade peringkat kredit yang signifikan.' },
+                        { asset: 'Properti (REITs Global Terkemuka)', percentage: 15, description: 'Eksposur ke pasar properti global tanpa modal besar, memberikan dividen dan potensi apresiasi nilai jangka panjang dari berbagai wilayah dengan manajemen profesional. **Take Profit:** Rebalancing jika porsi REITs melebihi target alokasi, atau jika sektor properti secara keseluruhan mengalami bubble.' },
+                        { asset: 'Global Index ETFs (Diversifikasi Geografis)', percentage: 15, description: 'Investasi pada indeks pasar global untuk diversifikasi geografis yang luas, menangkap pertumbuhan ekonomi dunia dengan biaya rendah. **Take Profit:** Rebalancing tahunan atau semi-tahunan untuk mengembalikan alokasi ke target awal, memanfaatkan kenaikan pasar global secara konsisten.' },
+                        { asset: 'Emas', percentage: 10, description: 'Sebagai penyeimbang portofolio terhadap ketidakpastian ekonomi dan inflasi, memberikan stabilitas di tengah volatilitas pasar. **Take Profit:** Jual sebagian jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                },
+                'agresif': {
+                    title: 'Portofolio Agresif Jenius untuk Investor Muda',
+                    summary: 'Maksimalkan pertumbuhan dengan toleransi risiko tinggi yang terhitung. AlgoVest AI mengoptimalkan alokasi untuk memanfaatkan potensi keuntungan eksponensial dalam jangka sangat panjang, dengan manajemen risiko yang ketat dan fokus pada inovasi disruptif.',
+                    annualReturnRate: 0.15, // 15%
+                    allocation: [
+                        { asset: 'Saham Pertumbuhan Tinggi (Disruptive Tech, Early-Stage Biotech)', percentage: 50, description: 'Fokus pada perusahaan dengan potensi pertumbuhan eksponensial di tahap awal dan teknologi disruptif (mis. AI, bioteknologi), namun dengan volatilitas dan risiko yang sangat tinggi. **Take Profit:** Sangat agresif. Jual 30-50% posisi jika saham naik >100% dalam waktu singkat, atau jika valuasi menjadi ekstrem (P/E Ratio > 2x rata-rata historisnya).' },
+                        { asset: 'Aset Kripto Kapitalisasi Besar (mis. Bitcoin, Ethereum)', percentage: 20, description: 'Eksposur ke pasar aset digital yang sangat volatil namun dengan potensi keuntungan besar, hanya untuk porsi kecil portofolio yang dapat ditoleransi risikonya sebagai aset spekulatif. **Take Profit:** Jual 50% posisi jika naik >100% dari harga beli, atau jika ada tanda-tanda pasar kripto memasuki fase euforia ekstrem (misal: FOMO massal, harga naik vertikal tanpa koreksi).' },
+                        { asset: 'Private Equity/Venture Capital (via Platform Terkurasi)', percentage: 10, description: 'Investasi berisiko sangat tinggi pada bisnis rintisan atau perusahaan swasta melalui platform crowdfunding yang telah melalui kurasi ketat, untuk potensi imbal hasil luar biasa. **Take Profit:** Tergantung exit event (IPO, Akuisisi). Pertimbangkan jual sebagian jika valuasi pre-IPO melonjak drastis, atau jika ada penawaran secondary market yang menguntungkan.' },
+                        { asset: 'Small-Cap Growth Stocks (Potensi Tenbagger)', percentage: 10, description: 'Saham perusahaan kecil dengan potensi pertumbuhan masif (sering disebut "tenbagger"), membutuhkan riset mendalam dan toleransi risiko tinggi. **Take Profit:** Jual 25-50% posisi jika mencapai target 2-3x keuntungan, atau jika ada indikasi perlambatan pertumbuhan yang signifikan atau munculnya kompetitor kuat.' },
+                        { asset: 'Thematic ETFs (e.g., Robotics, Cybersecurity)', percentage: 5, description: 'Investasi pada tren mega masa depan melalui ETF tematik, memberikan diversifikasi dalam sektor pertumbuhan tinggi. **Take Profit:** Rebalancing tahunan atau jika sektor tersebut menunjukkan tanda-tanda overvaluation yang parah, atau jika tren fundamental jangka panjang mulai melemah.' },
+                        { asset: 'Emas', percentage: 5, description: 'Sedikit lindung nilai untuk volatilitas ekstrem di portofolio yang sangat agresif, berfungsi sebagai asuransi terhadap gejolak tak terduga. **Take Profit:** Jual jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                }
+            },
+            'menengah': { // Usia 31-50 tahun: Penghasilan cenderung stabil, tujuan keuangan mulai konkret.
+                'konservatif': {
+                    title: 'Portofolio Konservatif Jenius untuk Investor Menengah',
+                    summary: 'Melindungi modal yang sudah terkumpul dengan pertumbuhan yang stabil dan pendapatan yang dapat diandalkan. Ideal untuk yang mendekati tujuan keuangan besar seperti pembelian rumah atau pendidikan anak, dengan fokus pada preservasi kekayaan yang cerdas.',
+                    annualReturnRate: 0.05, // 5%
+                    allocation: [
+                        { asset: 'Obligasi Pemerintah (SBN & Sukuk Ritel)', percentage: 55, description: 'Porsi terbesar untuk keamanan modal dan pendapatan tetap yang terjamin, fondasi portofolio yang tidak mudah goyah dan tahan inflasi. **Take Profit:** Hold hingga jatuh tempo, atau jual jika ada kebutuhan mendesak dan suku bunga turun signifikan, memungkinkan penjualan dengan premium.' },
+                        { asset: 'Reksa Dana Pendapatan Tetap (Diversifikasi Obligasi)', percentage: 20, description: 'Diversifikasi obligasi yang dikelola profesional untuk stabilitas dan pendapatan tambahan, memitigasi risiko obligasi tunggal dan memberikan imbal hasil kompetitif. **Take Profit:** Rebalancing jika porsi melebihi target, atau jika terjadi perubahan signifikan pada lingkungan suku bunga.' },
+                        { asset: 'Saham Blue-Chip (Sektor Utilitas, Kesehatan, Konsumer Staples)', percentage: 15, description: 'Perusahaan besar yang stabil di sektor defensif, memberikan pertumbuhan moderat dengan volatilitas rendah, cocok untuk tujuan jangka menengah dan pendapatan dividen. **Take Profit:** Rebalancing jika porsi melebihi target alokasi (misal >20% dari total portofolio), atau jika valuasi menjadi sangat mahal tanpa fundamental yang mendukung.' },
+                        { asset: 'Properti (REITs Domestik & Global)', percentage: 5, description: 'Stabilitas dan potensi apresiasi jangka panjang dari sektor riil domestik dan global, tanpa perlu membeli properti fisik secara langsung, menawarkan diversifikasi geografis. **Take Profit:** Rebalancing jika porsi melebihi target, atau jika pasar properti di wilayah tersebut menunjukkan tanda-tanda overvaluation yang jelas.' },
+                        { asset: 'Emas Fisik/Digital', percentage: 5, description: 'Aset safe haven untuk melindungi daya beli dari inflasi dan ketidakpastian pasar, menjaga nilai aset di tengah gejolak ekonomi. **Take Profit:** Jual sebagian jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                },
+                'moderat': {
+                    title: 'Portofolio Moderat Jenius untuk Investor Menengah',
+                    summary: 'Keseimbangan optimal antara pertumbuhan dan keamanan, dengan fokus pada akumulasi kekayaan yang signifikan dan efisiensi modal. AlgoVest AI mengintegrasikan aset berpendapatan dan pertumbuhan untuk diversifikasi yang kuat dan imbal hasil yang optimal.',
+                    annualReturnRate: 0.08, // 8%
+                    allocation: [
+                        { asset: 'Saham Blue-Chip (Sektor Keuangan, Industri, Teknologi Mature)', percentage: 35, description: 'Kombinasi perusahaan besar yang stabil dan sektor dengan pertumbuhan konsisten, menawarkan pertumbuhan modal dan dividen, termasuk pemimpin teknologi yang sudah mapan. **Take Profit:** Rebalancing jika porsi melebihi target, atau jika valuasi menjadi ekstrem (P/E Ratio > 1.5x rata-rata historisnya).' },
+                        { asset: 'Obligasi Korporasi Peringkat A (Diversifikasi Industri)', percentage: 30, description: 'Pendapatan tetap yang lebih tinggi dari obligasi pemerintah dengan risiko terkontrol dari perusahaan solid, untuk diversifikasi pendapatan lintas industri. **Take Profit:** Hold hingga jatuh tempo, atau jual jika spread yield menyempit drastis atau ada downgrade peringkat kredit yang signifikan.' },
+                        { asset: 'Properti Langsung/REITs (Komersial & Residensial)', percentage: 20, description: 'Diversifikasi aset riil untuk stabilitas dan potensi pendapatan sewa dari properti komersial dan residensial, baik melalui kepemilikan langsung maupun tidak langsung. **Take Profit:** Jual properti fisik jika target keuntungan tercapai (misal 2x harga beli) atau jika ada perubahan demografi/ekonomi yang merugikan. Rebalancing REITs jika porsi melebihi target.' },
+                        { asset: 'Reksa Dana Campuran Moderat (Aktif Dikelola)', percentage: 10, description: 'Portofolio seimbang saham dan obligasi yang dikelola profesional, menyesuaikan alokasi dengan kondisi pasar untuk imbal hasil optimal. **Take Profit:** Rebalancing tahunan atau semi-tahunan untuk menjaga alokasi, tidak ada target profit spesifik per aset karena dikelola secara aktif.' },
+                        { asset: 'Emas', percentage: 5, description: 'Lindung nilai terhadap inflasi dan ketidakpastian pasar, menjaga nilai aset di tengah fluktuasi ekonomi global. **Take Profit:** Jual sebagian jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                },
+                'agresif': {
+                    title: 'Portofolio Agresif Jenius untuk Investor Menengah',
+                    summary: 'Meskipun usia menengah, portofolio ini tetap fokus pada pertumbuhan tinggi dengan risiko yang terkontrol secara cerdas. Ideal jika Anda masih memiliki toleransi risiko yang kuat dan waktu yang cukup untuk pemulihan, dengan target imbal hasil superior dan fokus pada tren masa depan.',
+                    annualReturnRate: 0.12, // 12%
+                    allocation: [
+                        { asset: 'Saham Pertumbuhan (Biotech, AI, Energi Terbarukan, Semikonduktor)', percentage: 45, description: 'Mencari keuntungan dari sektor yang berkembang pesat dan inovatif (mis. bioteknologi, kecerdasan buatan, energi terbarukan, semikonduktor), dengan analisis mendalam untuk mengelola risiko spesifik industri. **Take Profit:** Jual 20-40% posisi jika saham naik >70% dalam waktu singkat, atau jika ada tanda-tanda perlambatan inovasi/kompetisi ketat.' },
+                        { asset: 'Obligasi High-Yield (Terpilih & Diversifikasi)', percentage: 15, description: 'Obligasi dengan imbal hasil lebih tinggi, namun dengan risiko kredit yang lebih besar, cocok untuk investor yang berani mengambil risiko setelah analisis ketat dan diversifikasi. **Take Profit:** Jual jika spread yield menyempit drastis, ada downgrade peringkat kredit, atau jika kondisi ekonomi memburuk secara signifikan.' },
+                        { asset: 'Properti Langsung/Pengembangan (Proyek Terkurasi & Emerging Market)', percentage: 25, description: 'Potensi keuntungan besar dari investasi properti aktif pada proyek-proyek yang telah melalui kurasi cermat, termasuk di pasar berkembang yang memiliki potensi apresiasi tinggi. **Take Profit:** Jual setelah proyek selesai dan mencapai target keuntungan yang telah ditetapkan (misal 30-50% dari modal awal), atau jika kondisi pasar properti lokal/regional memburuk.' },
+                        { asset: 'P2P Lending (Diversifikasi Platform & Sektor)', percentage: 10, description: 'Alternatif investasi dengan potensi return menarik, namun dengan risiko gagal bayar yang perlu dimitigasi melalui diversifikasi lintas platform dan sektor. **Take Profit:** Tarik dana (reinvestasi sebagian) setelah mencapai target return tahunan (misal 15-20%), atau jika tingkat gagal bayar di platform tertentu meningkat drastis.' },
+                        { asset: 'Emas', percentage: 5, description: 'Sebagai diversifikasi kecil terhadap risiko pasar yang tidak terduga, memberikan perlindungan minimal di portofolio agresif. **Take Profit:** Jual jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                }
+            },
+            'senior': { // Usia 51+ tahun: Prioritas utama adalah menjaga modal dan pendapatan tetap.
+                'konservatif': {
+                    title: 'Portofolio Konservatif Jenius untuk Investor Senior',
+                    summary: 'Prioritas utama adalah menjaga modal yang telah terkumpul dan menghasilkan pendapatan stabil untuk masa pensiun. AlgoVest AI mengutamakan keamanan dan likuiditas untuk kenyamanan finansial di hari tua, dengan mitigasi inflasi yang cerdas.',
+                    annualReturnRate: 0.04, // 4%
+                    allocation: [
+                        { asset: 'Obligasi Pemerintah Jangka Pendek & Menengah (Indeks Inflasi)', percentage: 65, description: 'Sangat aman, pendapatan teratur, dan likuiditas tinggi untuk memenuhi kebutuhan hidup di masa pensiun dengan risiko minimal, termasuk obligasi yang disesuaikan inflasi. **Take Profit:** Hold hingga jatuh tempo untuk pendapatan maksimal, atau jual jika ada kebutuhan mendesak dan suku bunga turun signifikan.' },
+                        { asset: 'Reksa Dana Pasar Uang & Pendapatan Tetap (Fokus Dividen)', percentage: 20, description: 'Untuk menjaga likuiditas dan keamanan maksimal, ideal untuk dana darurat pensiun dan pendapatan tambahan yang stabil dari instrumen berpendapatan tetap. **Take Profit:** Cairkan sesuai kebutuhan, rebalancing tahunan untuk menjaga alokasi.' },
+                        { asset: 'Saham Dividen (Perusahaan Utilitas/Konsumer Defensif Global)', percentage: 10, description: 'Perusahaan stabil dengan riwayat dividen kuat dari pasar domestik dan global, memberikan pendapatan pasif yang dapat diandalkan tanpa volatilitas berlebihan. **Take Profit:** Rebalancing jika porsi melebihi target alokasi, atau jika ada pemotongan dividen yang signifikan atau perubahan fundamental negatif.' },
+                        { asset: 'Emas Fisik/Digital', percentage: 5, description: 'Perlindungan nilai jangka panjang terhadap inflasi dan ketidakpastian ekonomi, menjaga daya beli di masa pensiun. **Take Profit:** Jual sebagian jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                },
+                'moderat': {
+                    title: 'Portofolio Moderat Jenius untuk Investor Senior',
+                    summary: 'Mencari pendapatan stabil dengan sedikit pertumbuhan untuk melawan inflasi, sambil menjaga risiko tetap terkontrol. AlgoVest AI menyeimbangkan kebutuhan pendapatan dengan potensi apresiasi moderat melalui diversifikasi yang cermat.',
+                    annualReturnRate: 0.07, // 7%
+                    allocation: [
+                        { asset: 'Obligasi Pemerintah & Korporasi Peringkat Tinggi (Diversifikasi Tenor)', percentage: 50, description: 'Sumber pendapatan utama dengan keamanan yang baik, menyeimbangkan risiko dan imbal hasil dari berbagai jenis obligasi terkemuka dengan tenor yang bervariasi. **Take Profit:** Hold hingga jatuh tempo, atau jual jika spread yield menyempit drastis atau ada downgrade peringkat kredit yang signifikan.' },
+                        { asset: 'Saham Dividen & Blue-Chip (Sektor Stabil dengan Pertumbuhan Dividen)', percentage: 30, description: 'Pendapatan dividen dan pertumbuhan moderat dari perusahaan mapan dan stabil yang konsisten meningkatkan dividen, menjaga daya beli aset. **Take Profit:** Rebalancing jika porsi melebihi target alokasi, atau jika valuasi menjadi sangat mahal tanpa fundamental yang mendukung.' },
+                        { asset: 'Properti (Sewa Unit Residensial/REITs Pendapatan)', percentage: 15, description: 'Pendapatan sewa pasif dan stabilitas aset riil untuk jangka panjang, baik melalui properti sewa langsung atau REITs yang berfokus pada pendapatan stabil. **Take Profit:** Jual properti fisik jika target keuntungan tercapai (misal 2x harga beli) atau jika ada perubahan demografi/ekonomi yang merugikan. Rebalancing REITs jika porsi melebihi target.' },
+                        { asset: 'Emas', percentage: 5, description: 'Sebagai lindung nilai terhadap inflasi dan volatilitas pasar, menjaga nilai aset di tengah fluktuasi ekonomi. **Take Profit:** Jual sebagian jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                },
+                'agresif': {
+                    title: 'Portofolio Agresif Jenius untuk Investor Senior',
+                    summary: 'Meskipun senior, portofolio ini mencari pertumbuhan lebih tinggi dengan risiko yang lebih besar, namun terhitung dan dikelola secara strategis. AlgoVest AI dirancang untuk mereka yang sangat nyaman dengan fluktuasi pasar dan memiliki sumber pendapatan lain yang kuat, dengan target imbal hasil superior dan diversifikasi canggih.',
+                    annualReturnRate: 0.10, // 10%
+                    allocation: [
+                        { asset: 'Saham Dividen Pertumbuhan (Sektor Teknologi Mature & Kesehatan)', percentage: 40, description: 'Kombinasi pendapatan dan pertumbuhan dari perusahaan solid yang lebih tahan gejolak pasar, dengan fokus pada perusahaan teknologi mapan dan kesehatan yang masih tumbuh dan membayar dividen. **Take Profit:** Rebalancing jika porsi melebihi target alokasi, atau jika valuasi menjadi ekstrem tanpa fundamental yang mendukung.' },
+                        { asset: 'Obligasi Korporasi Peringkat Menengah (Diversifikasi Geografis & Sektor)', percentage: 30, description: 'Pendapatan tetap, namun dengan potensi return lebih tinggi dari obligasi pemerintah, dengan risiko yang telah dipertimbangkan dan diversifikasi lintas geografis dan sektor. **Take Profit:** Jual jika spread yield menyempit drastis, ada downgrade peringkat kredit, atau jika kondisi ekonomi memburuk secara signifikan.' },
+                        { asset: 'Properti (REITs Komersial/Sewa Properti Pilihan & Diversifikasi Tipe)', percentage: 20, description: 'Aset riil untuk pertumbuhan dan pendapatan, dengan fokus pada stabilitas jangka panjang dan potensi apresiasi dari properti komersial atau sewa pilihan yang terdiversifikasi berdasarkan tipe (mis. gudang, apartemen). **Take Profit:** Jual properti fisik jika target keuntungan tercapai (misal 2x harga beli) atau jika ada perubahan demografi/ekonomi yang merugikan. Rebalancing REITs jika porsi melebihi target.' },
+                        { asset: 'Emas', percentage: 10, description: 'Sebagai diversifikasi dan safe haven dalam portofolio yang masih berani mengambil risiko, untuk mitigasi volatilitas pasar yang tidak terduga dan perlindungan nilai. **Take Profit:** (Jual sebagian jika harga naik signifikan (>20% dalam setahun) dan porsi emas melebihi alokasi target, lalu alokasikan kembali ke aset lain yang undervalued.' }
+                    ]
+                }
+            }
+        };
+
+        // Elemen DOM
+        const ageInput = document.getElementById('age-input');
+        const salaryInput = document.getElementById('salary-input');
+        const riskProfileOptions = document.querySelectorAll('input[name="risk-profile"]');
+        const generateBtn = document.getElementById('generate-recommendation-btn');
+        const portfolioResultDiv = document.getElementById('portfolio-result');
+        const resultTitle = document.getElementById('result-title');
+        const resultSummary = document.getElementById('result-summary');
+        const allocationList = document.getElementById('allocation-list');
+        const financialBreakdownDiv = document.getElementById('financial-breakdown');
+        const displaySalary = document.getElementById('display-salary');
+        const displayExpenses = document.getElementById('display-expenses');
+        const displayEmergencyFundContribution = document.getElementById('display-emergency-fund-contribution');
+        const displaySavingsForBankAmount = document.getElementById('display-savings-for-bank-amount'); // New display element
+        const displayInvestmentAmount = document.getElementById('display-investment-amount');
+        const toastNotification = document.getElementById('toast-notification');
+        const toastMessage = document.getElementById('toast-message');
+        const toastIcon = document.querySelector('#toast-notification .toast-icon');
+        const toastCloseBtn = document.querySelector('#toast-notification .toast-close-btn');
+        const detailedInvestmentBreakdown = document.getElementById('detailed-investment-breakdown'); // New element for detailed breakdown
+        const algovestCharacter = document.getElementById('algovest-character'); // AlgoVest character SVG container
+        const algovestMouth = document.getElementById('algovest-mouth'); // Reference to the mouth element
+        const downloadPdfBtn = document.getElementById('download-pdf-btn'); // Tombol Unduh PDF (original)
+        const downloadPngBtn = document.getElementById('download-png-btn'); // Tombol Unduh PNG (original)
+
+        // New DOM elements for displaying exported media
+        const exportedImageContainer = document.getElementById('exported-image-container');
+        const exportedImage = document.getElementById('exported-image');
+        const downloadImageLink = document.getElementById('download-image-link');
+        const exportedPdfContainer = document.getElementById('exported-pdf-container');
+        const exportedPdfIframe = document.getElementById('exported-pdf-iframe');
+        const downloadPdfLinkDisplay = document.getElementById('download-pdf-link-display');
+
+        // Temporary hidden container for export content
+        const exportContentContainer = document.getElementById('export-content-container');
+
+        // Validation error message elements
+        const ageError = document.getElementById('age-error');
+        const salaryError = document.getElementById('salary-error');
+        const riskProfileError = document.getElementById('risk-profile-error');
+        const simulationError = document.getElementById('simulation-error');
+
+        // Simulation elements
+        const investmentSimulationDiv = document.getElementById('investment-simulation');
+        const simulationDurationOptions = document.querySelectorAll('input[name="simulation-duration"]');
+        const runSimulationBtn = document.getElementById('run-simulation-btn');
+        const investmentChartCanvas = document.getElementById('investmentChart');
+        const simulationResultsSummary = document.getElementById('simulation-results-summary');
+
+        // New DOM elements for numerical simulation results
+        const numericalSimulationResultsDiv = document.getElementById('numerical-simulation-results');
+        const displaySimTotalContributions = document.getElementById('display-sim-total-contributions');
+        const displaySimTotalReturn = document.getElementById('display-sim-total-return');
+        const displaySimFinalBalance = document.getElementById('display-sim-final-balance');
+
+
+        let myChart; // Variable to hold the Chart.js instance
+
+        // Variabel untuk mengontrol timeout toast
+        let toastTimeoutId;
+        // Kumpulan pesan bijak yang belum ditampilkan
+        let availableWiseMessages = [];
+        // Kumpulan pesan bijak asli untuk reset
+        const originalWiseMessages = [
+            'Investasi terbaik adalah investasi pada diri sendiri. Semakin banyak Anda belajar, semakin banyak yang Anda hasilkan.',
+            'Waktu di pasar lebih penting daripada mengatur waktu pasar.',
+            'Jangan menaruh semua telur dalam satu keranjang. Diversifikasi adalah kuncinya.',
+            'Jadilah takut ketika orang lain serakah, dan serakah ketika orang lain takut.',
+            'Risiko berasal dari tidak tahu apa yang Anda lakukan.',
+            'Harga adalah apa yang Anda bayar. Nilai adalah apa yang Anda dapatkan.',
+            'Kesabaran adalah kunci dalam investasi. Pasar adalah alat untuk mentransfer uang dari yang tidak sabar ke yang sabar.',
+            'Inflasi adalah musuh terbesar uang Anda. Investasi adalah tamengnya.',
+            'Mulailah berinvestasi sedini mungkin. Kekuatan bunga berbunga akan bekerja untuk Anda.',
+            'Jangan pernah berinvestasi pada bisnis yang tidak Anda pahami.',
+            'Investasi adalah maraton, bukan sprint. Fokus pada tujuan jangka panjang.',
+            'Jangan biarkan emosi menguasai keputusan investasi Anda. Tetaplah rasional.',
+            'Belajar dari kesalahan adalah bagian penting dari perjalanan investasi yang sukses.',
+            'Konsistensi adalah kunci. Sedikit demi sedikit, lama-lama menjadi bukit investasi.',
+            'Pasar saham adalah mesin transfer kekayaan terbesar dari yang tidak sabar kepada yang sabar.',
+            'Jika Anda tidak cemas, Anda tidak berinvestasi cukup. – Ray Dalio',
+            'Aturan Nomor 1: Jangan pernah kehilangan uang. Aturan Nomor 2: Jangan pernah melupakan aturan Nomor 1. – Warren Buffett',
+            'Investor cerdas adalah realis yang menjual kepada para optimis dan membeli dari para pesimis. – Benjamin Graham',
+            'Jangan pernah berinvestasi pada perusahaan yang bisnisnya tidak bisa Anda pahami. – Peter Lynch',
+            'Bunga berbunga adalah keajaiban dunia kedelapan. Siapa pun yang memahaminya, akan mendapatkannya; siapa pun yang tidak, akan membayarnya. – Albert Einstein',
+            'Disiplin adalah jembatan antara tujuan dan pencapaian.',
+            'Investasi bukan tentang seberapa banyak uang yang Anda hasilkan, tetapi seberapa banyak uang yang Anda simpan dan kembangkan.',
+            'Setiap krisis adalah peluang yang terselubung. Siapkan diri Anda.',
+            'Jangan mencoba memprediksi pasar, investasikan waktu Anda di pasar.',
+            'Kebebasan finansial dimulai dengan keputusan kecil yang konsisten.'
+        ];
+
+        // Inisialisasi pesan bijak saat halaman dimuat
+        function initializeWiseMessages() {
+            availableWiseMessages = [...originalWiseMessages]; // Salin semua pesan asli
+        }
+
+        // Global variable to store the last generated recommendation
+        let lastGeneratedRecommendation = null;
+
+        // --- Fungsi Utilitas ---
+        function showToast(message, type = 'info', duration = 3000) {
+            // Bersihkan timeout sebelumnya jika ada toast yang sedang tampil
+            if (toastNotification.classList.contains('show')) {
+                clearTimeout(toastTimeoutId);
+                toastNotification.classList.remove('show');
+            }
+            // Panggil _showToast langsung tanpa penundaan
+            _showToast(message, type, duration);
+        }
+
+        function _showToast(message, type, duration) {
+            toastNotification.classList.remove('success', 'error', 'info', 'warning', 'wise-quote'); // Hapus semua kelas tipe
+            toastNotification.classList.add(type);
+            toastMessage.textContent = message;
+            toastIcon.innerHTML = '';
+
+            let iconClass = '';
+            switch (type) {
+                case 'success': iconClass = 'fas fa-check-circle'; break;
+                case 'error': iconClass = 'fas fa-times-circle'; break;
+                case 'warning': iconClass = 'fas fa-exclamation-triangle'; break;
+                case 'info': iconClass = 'fas fa-info-circle'; break;
+                case 'wise-quote': iconClass = 'fas fa-lightbulb'; break; // Ikon khusus untuk kata bijak
+                default: iconClass = 'fas fa-info-circle'; break;
+            }
+            const iconElement = document.createElement('i');
+            iconElement.classList.add(...iconClass.split(' '));
+            toastIcon.appendChild(iconElement);
+
+            toastNotification.classList.add('show');
+
+            // Durasi disesuaikan untuk kata bijak agar cukup waktu membaca
+            const wordsPerSecond = 200 / 60; // Approx 3.33 words/sec
+            const messageWordCount = message.split(/\s+/).length;
+            const estimatedReadingTimeMs = (messageWordCount / wordsPerSecond) * 1000;
+            const finalDuration = Math.max(4000, estimatedReadingTimeMs + 1000); // Minimal 4 detik, plus 1 detik buffer
+
+            toastTimeoutId = setTimeout(() => {
+                toastNotification.classList.remove('show');
+            }, finalDuration);
+
+            toastCloseBtn.onclick = () => {
+                toastNotification.classList.remove('show');
+                clearTimeout(toastTimeoutId);
+            };
+        }
+
+        // Format angka menjadi mata uang Rupiah dengan titik sebagai pemisah ribuan
+        function formatRupiah(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Fungsi untuk format input gaji secara otomatis
+        function formatSalaryInput(inputElement) {
+            inputElement.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, ''); // Hapus semua non-digit
+                if (value) {
+                    value = parseInt(value, 10).toLocaleString('id-ID'); // Format sebagai string dengan titik
+                }
+                e.target.value = value;
+                // Clear error message on input
+                salaryInput.classList.remove('error-input');
+                salaryError.textContent = '';
+            });
+        }
+
+        // --- Logika AlgoVest AI ---
+        function getAgeCategory(age) {
+            if (age >= 18 && age <= 30) return 'muda';
+            if (age >= 31 && age <= 50) return 'menengah';
+            if (age >= 51 && age <= 80) return 'senior'; // Changed max age to 80
+            return null; // Usia di luar rentang yang didukung
+        }
+
+        // Fungsi untuk mengkalkulasi alokasi gaji
+        function calculateFinancialBreakdown(salary, age, riskProfile) {
+            let estimatedExpensesPercentage;
+            let emergencyFundTargetMonths = 6; // Target dana darurat: 6 bulan biaya hidup
+
+            // Estimasi biaya hidup berdasarkan gaji (disempurnakan dan lebih realistis)
+            // Menggunakan pendekatan "Rule of 50/30/20" sebagai dasar, disesuaikan dengan gaji
+            // 50% Kebutuhan, 30% Keinginan, 20% Tabungan/Investasi
+            // Namun, untuk gaji rendah, kebutuhan bisa lebih dari 50%
+            if (salary < 3000000) { // Gaji < 3 juta (UMR/UMP)
+                estimatedExpensesPercentage = 0.75; // 75% untuk biaya hidup (kebutuhan & sedikit keinginan)
+            } else if (salary < 7000000) { // Gaji 3 - 7 juta
+                estimatedExpensesPercentage = 0.60; // 60% untuk biaya hidup
+            } else if (salary < 15000000) { // Gaji 7 - 15 juta
+                estimatedExpensesPercentage = 0.50; // 50% untuk biaya hidup
+            } else if (salary < 30000000) { // Gaji 15 - 30 juta
+                estimatedExpensesPercentage = 0.40; // 40% untuk biaya hidup
+            } else { // Gaji > 30 juta
+                estimatedExpensesPercentage = 0.30; // 30% untuk biaya hidup
+            }
+
+            const estimatedMonthlyExpenses = salary * estimatedExpensesPercentage;
+            let disposableIncome = salary - estimatedMonthlyExpenses; // Penghasilan yang bisa dialokasikan
+
+            let emergencyFundContribution = 0;
+            const currentEmergencyFund = parseFloat(localStorage.getItem('emergencyFund') || '0');
+            const requiredEmergencyFund = estimatedMonthlyExpenses * emergencyFundTargetMonths;
+
+            // Prioritaskan pembangunan dana darurat jika belum cukup
+            if (currentEmergencyFund < requiredEmergencyFund) {
+                const deficit = requiredEmergencyFund - currentEmergencyFund;
+                emergencyFundContribution = Math.min(disposableIncome * 0.25, deficit); // Maks 25% dari disposable income
+                disposableIncome -= emergencyFundContribution;
+                localStorage.setItem('emergencyFund', (currentEmergencyFund + emergencyFundContribution).toString());
+            }
+
+            // Alokasi sisa disposable income ke Tabungan/Bank dan Investasi
+            let savingsForBankPercentage;
+            let investmentAllocationPercentage;
+
+            // Logika baru untuk alokasi tabungan vs investasi dari disposable income
+            // Lebih konservatif = lebih banyak ke tabungan/bank
+            // Lebih agresif = lebih banyak ke investasi
+            if (riskProfile === 'konservatif') {
+                savingsForBankPercentage = 0.40; // 40% dari disposable income untuk tabungan/bank
+                investmentAllocationPercentage = 0.60; // 60% dari disposable income untuk investasi
+            } else if (riskProfile === 'moderat') {
+                savingsForBankPercentage = 0.25; // 25% untuk tabungan/bank
+                investmentAllocationPercentage = 0.75; // 75% untuk investasi
+            } else if (riskProfile === 'agresif') {
+                savingsForBankPercentage = 0.15; // 15% untuk tabungan/bank
+                investmentAllocationPercentage = 0.85; // 85% untuk investasi
+            }
+
+            const totalSavingsAndInvestmentAmount = disposableIncome; // Total sisa setelah biaya hidup & dana darurat
+            const savingsForBankAmount = totalSavingsAndInvestmentAmount * savingsForBankPercentage;
+            const totalMonthlyInvestmentAmount = totalSavingsAndInvestmentAmount * investmentAllocationPercentage;
+
+
+            return {
+                salary: salary,
+                estimatedMonthlyExpenses: estimatedMonthlyExpenses,
+                emergencyFundContribution: emergencyFundContribution,
+                totalSavingsAndInvestmentAmount: totalSavingsAndInvestmentAmount, // Total dana yang bisa ditabung/investasi
+                savingsForBankAmount: savingsForBankAmount, // Dana untuk tabungan/bank
+                totalMonthlyInvestmentAmount: totalMonthlyInvestmentAmount
+            };
+        }
+
+
+        function generatePortfolioRecommendation(age, salary, riskProfile) {
+            const ageCategory = getAgeCategory(age);
+
+            if (!ageCategory) {
+                // Validation handled by event listener
+                return null;
+            }
+
+            const recommendation = portfolioData[ageCategory]?.[riskProfile];
+
+            if (!recommendation) {
+                showToast('Rekomendasi tidak ditemukan untuk kombinasi usia dan risiko ini. Silakan coba kombinasi lain.', 'error');
+                return null;
+            }
+
+            // Kalkulasi breakdown keuangan berdasarkan gaji
+            const financialBreakdown = calculateFinancialBreakdown(salary, age, riskProfile);
+
+            return {
+                ...recommendation,
+                financialBreakdown: financialBreakdown
+            };
+        }
+
+        function renderPortfolio(recommendation) {
+            resultTitle.textContent = recommendation.title;
+            resultSummary.textContent = recommendation.summary;
+            allocationList.innerHTML = ''; // Hapus hasil sebelumnya
+            detailedInvestmentBreakdown.innerHTML = ''; // Clear detailed breakdown
+
+            // Sembunyikan pratinjau gambar dan PDF saat rekomendasi baru dibuat
+            exportedImageContainer.classList.remove('show');
+            exportedPdfContainer.classList.remove('show');
+            exportedImage.style.display = 'none';
+            exportedPdfIframe.style.display = 'none';
+            downloadImageLink.style.display = 'none';
+            downloadPdfLinkDisplay.style.display = 'none';
+
+            // Hide simulation results
+            investmentSimulationDiv.classList.remove('show');
+            simulationResultsSummary.textContent = '';
+            numericalSimulationResultsDiv.classList.remove('show'); // Hide numerical results
+            if (myChart) {
+                myChart.destroy(); // Destroy previous chart instance
+            }
+
+
+            const totalMonthlyInvestmentAmount = recommendation.financialBreakdown.totalMonthlyInvestmentAmount;
+
+            // Pastikan totalMonthlyInvestmentAmount tidak negatif atau NaN
+            if (totalMonthlyInvestmentAmount <= 0 || isNaN(totalMonthlyInvestmentAmount)) {
+                // Tampilkan pesan peringatan dalam bagian hasil, tidak menyembunyikan div
+                const warningMessageElement = document.createElement('p');
+                warningMessageElement.classList.add('investment-warning-message');
+                warningMessageElement.textContent = 'Berdasarkan analisis, dana yang tersedia untuk investasi bulanan Anda saat ini adalah Rp 0.00. Mohon sesuaikan gaji atau biaya hidup Anda untuk mulai berinvestasi.';
+                allocationList.appendChild(warningMessageElement); // Tambahkan pesan ke daftar alokasi
+
+                // Pastikan bar tetap 0% atau kosong
+                // Clear allocation list if no investment is possible
+                // (already done by allocationList.innerHTML = ''; at the beginning)
+                showToast('Dana investasi tidak mencukupi. Silakan tinjau analisis keuangan Anda.', 'warning');
+
+                // Set display amounts to 0 for investment-related fields
+                displayInvestmentAmount.textContent = formatRupiah(0);
+                // The other breakdown fields will be set correctly below
+            } else {
+                recommendation.allocation.forEach(item => {
+                    const allocatedAmount = (item.percentage / 100) * totalMonthlyInvestmentAmount;
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <strong>${item.asset}</strong>
+                        <div class="portfolio-bar-container">
+                            <div class="portfolio-bar" style="width: 0%;" data-percentage="${item.percentage}"></div>
+                        </div>
+                        <span class="portfolio-percentage">${item.percentage}%</span>
+                        <p class="description">${item.description} <br> <i>Estimasi Alokasi: ${formatRupiah(allocatedAmount)} per bulan.</i></p>
+                    `;
+                    allocationList.appendChild(li);
+
+                    // Add to detailed investment breakdown
+                    const detailedLi = document.createElement('li');
+                    detailedLi.innerHTML = `
+                        <span>${item.asset}</span>
+                        <span>${formatRupiah(allocatedAmount)}</span>
+                    `;
+                    detailedInvestmentBreakdown.appendChild(detailedLi);
+                });
+
+                // Animasi bar setelah sedikit penundaan
+                setTimeout(() => {
+                    const bars = allocationList.querySelectorAll('.portfolio-bar');
+                    bars.forEach((bar) => {
+                        const targetPercentage = bar.getAttribute('data-percentage');
+                        bar.style.width = `${targetPercentage}%`;
+                    });
+                }, 300); // Penundaan untuk memungkinkan animasi fadeIn dimulai
+            }
+
+            // Tampilkan breakdown keuangan (ini selalu ditampilkan)
+            const fb = recommendation.financialBreakdown;
+            displaySalary.textContent = formatRupiah(fb.salary);
+            displayExpenses.textContent = formatRupiah(fb.estimatedMonthlyExpenses);
+            displayEmergencyFundContribution.textContent = formatRupiah(fb.emergencyFundContribution);
+            displaySavingsForBankAmount.textContent = formatRupiah(fb.savingsForBankAmount);
+            displayInvestmentAmount.textContent = formatRupiah(fb.totalMonthlyInvestmentAmount);
+
+            // Store the last generated recommendation
+            lastGeneratedRecommendation = recommendation;
+
+            portfolioResultDiv.classList.add('show');
+            financialBreakdownDiv.classList.add('show'); // Tampilkan bagian breakdown
+            investmentSimulationDiv.classList.add('show'); // Show simulation section
+            portfolioResultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        /**
+         * Generates the HTML content for the exportable image/PDF.
+         * This content is styled specifically for a clean, dark-mode export.
+         * @param {object} recommendation - The full recommendation object.
+         * @param {object} financialBreakdown - The financial breakdown data.
+         * @returns {string} The HTML string for the export content.
+         */
+        function createExportableContent(recommendation, financialBreakdown) {
+            const formattedSalary = formatRupiah(financialBreakdown.salary);
+            const formattedExpenses = formatRupiah(financialBreakdown.estimatedMonthlyExpenses);
+            const formattedEmergencyFund = formatRupiah(financialBreakdown.emergencyFundContribution);
+            const formattedSavingsBank = formatRupiah(financialBreakdown.savingsForBankAmount);
+            const formattedInvestment = formatRupiah(financialBreakdown.totalMonthlyInvestmentAmount);
+
+            let allocationHtml = '';
+            recommendation.allocation.forEach(item => {
+                const allocatedAmount = (item.percentage / 100) * financialBreakdown.totalMonthlyInvestmentAmount;
+                // Replace markdown bold with strong tags for export
+                const descriptionHtml = item.description.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                allocationHtml += `
+                    <li class="export-list-item">
+                        <strong class="export-asset-name">${item.asset}</strong>
+                        <div class="export-bar-container">
+                            <div class="export-bar" style="width: ${item.percentage}%;"></div>
+                        </div>
+                        <span class="export-percentage">${item.percentage}%</span>
+                        <p class="export-description">${descriptionHtml} <br> <i>Estimasi Alokasi: ${formatRupiah(allocatedAmount)} per bulan.</i></p>
+                    </li>
+                `;
+            });
+
+            let detailedInvestmentBreakdownHtml = '';
+            if (financialBreakdown.totalMonthlyInvestmentAmount > 0) {
+                recommendation.allocation.forEach(item => {
+                    const allocatedAmount = (item.percentage / 100) * financialBreakdown.totalMonthlyInvestmentAmount;
+                    detailedInvestmentBreakdownHtml += `
+                        <li class="export-breakdown-item">
+                            <span>${item.asset}</span>
+                            <span>${formatRupiah(allocatedAmount)}</span>
+                        </li>
+                    `;
+                });
+            } else {
+                detailedInvestmentBreakdownHtml = `
+                    <li class="export-breakdown-item">
+                        <span>Tidak ada dana yang dialokasikan untuk investasi saat ini.</span>
+                        <span>${formatRupiah(0)}</span>
+                    </li>
+                `;
+            }
+
+            return `
+                <div class="export-layout">
+                    <h2>${recommendation.title}</h2>
+                    <p class="summary">${recommendation.summary}</p>
+
+                    <div class="export-section">
+                        <h3>Alokasi Portofolio Investasi</h3>
+                        <ul class="export-list">
+                            ${allocationHtml}
+                        </ul>
+                    </div>
+
+                    <div class="export-financial-breakdown">
+                        <h3>Analisis Keuangan AlgoVest AI</h3>
+                        <ul>
+                            <li>Gaji Bulanan: <span>${formattedSalary}</span></li>
+                            <li>Estimasi Biaya Hidup Bulanan: <span>${formattedExpenses}</span></li>
+                            <li>Dana Darurat Prioritas (jika belum cukup): <span>${formattedEmergencyFund}</span></li>
+                            <li>Total Dana Tabungan/Bank Bulanan yang Direkomendasikan: <span>${formattedSavingsBank}</span></li>
+                            <li>Total Dana Investasi Bulanan yang Direkomendasikan: <span>${formattedInvestment}</span></li>
+                        </ul>
+                        <h4>Alokasi Dana Investasi per Jenis Aset:</h4>
+                        <ul class="export-list">
+                            ${detailedInvestmentBreakdownHtml}
+                        </ul>
+                    </div>
+                    <p class="export-disclaimer"><i>Rekomendasi ini bersifat umum dan hanya untuk tujuan edukasi. Selalu konsultasikan dengan perencana keuangan profesional sebelum membuat keputusan investasi.</i></p>
+                    <p class="export-footer">&copy; 2025 AlgoVest AI. All rights reserved. Generated by AlgoVest AI.</p>
+                </div>
+            `;
+        }
+
+
+        // --- Fungsi Ekspor ---
+        async function exportToPng() {
+            if (!lastGeneratedRecommendation) {
+                showToast('Mohon buat rekomendasi terlebih dahulu.', 'warning');
+                return;
+            }
+            showToast('Mempersiapkan pratinjau gambar...', 'info');
+
+            // Sembunyikan tombol unduh utama sebelum capture
+            downloadPdfBtn.style.display = 'none';
+            downloadPngBtn.style.display = 'none';
+
+            try {
+                // Populate the hidden container with export-specific content
+                exportContentContainer.innerHTML = createExportableContent(lastGeneratedRecommendation, lastGeneratedRecommendation.financialBreakdown);
+
+                // Capture the hidden container
+                const canvas = await html2canvas(exportContentContainer, { 
+                    scale: 2, // Scale 2 for 1080px logical width -> 2160px actual width for better quality
+                    backgroundColor: '#1e1e1e', // Ensure consistent dark background
+                    width: 1080 // Set the logical width for the capture
+                }); 
+                const imgData = canvas.toDataURL('image/png');
+                
+                exportedImage.src = imgData;
+                downloadImageLink.href = imgData;
+                exportedImage.style.display = 'block';
+                downloadImageLink.style.display = 'inline-flex';
+                exportedImageContainer.classList.add('show');
+                showToast('Pratinjau gambar siap! Anda bisa mengunduhnya.', 'success');
+
+                // Scroll to the image
+                exportedImageContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (error) {
+                console.error('Error saat membuat pratinjau PNG:', error);
+                showToast('Gagal membuat pratinjau gambar. Silakan coba lagi.', 'error');
+            } finally {
+                // Clear the hidden container
+                exportContentContainer.innerHTML = '';
+                // Pastikan tombol unduh utama ditampilkan kembali setelah capture selesai (berhasil atau gagal)
+                downloadPdfBtn.style.display = 'inline-flex'; 
+                downloadPngBtn.style.display = 'inline-flex'; 
+            }
+        }
+
+        async function exportToPdf() {
+            if (!lastGeneratedRecommendation) {
+                showToast('Mohon buat rekomendasi terlebih dahulu.', 'warning');
+                return;
+            }
+            showToast('Mempersiapkan pratinjau PDF...', 'info');
+
+            // Sembunyikan tombol unduh utama sebelum capture
+            downloadPdfBtn.style.display = 'none';
+            downloadPngBtn.style.display = 'none';
+
+            try {
+                // Populate the hidden container with export-specific content
+                exportContentContainer.innerHTML = createExportableContent(lastGeneratedRecommendation, lastGeneratedRecommendation.financialBreakdown);
+
+                // Capture the hidden container
+                const canvas = await html2canvas(exportContentContainer, { 
+                    scale: 2, // Scale 2 for better quality
+                    backgroundColor: '#1e1e1e', // Ensure consistent dark background
+                    width: 1080 // Set the logical width for the capture
+                }); 
+                const imgData = canvas.toDataURL('image/png');
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4'); // Potrait, milimeter, A4
+                
+                // Get PDF page dimensions
+                const imgWidth = pdf.internal.pageSize.getWidth(); 
+                const pageHeight = pdf.internal.pageSize.getHeight(); 
+
+                // Calculate image height based on PDF page width to maintain aspect ratio
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                
+                let heightLeft = imgHeight;
+                let position = 0; // Current Y position on the PDF page
+
+                // Add first page
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight; // Decrease remaining height of the image
+
+                // Add subsequent pages if content overflows
+                while (heightLeft > 0) {
+                    // Shift the image UP by one page height on the new page
+                    // This effectively shows the next segment of the long image
+                    position = -pageHeight + position; // Corrected calculation for continuous scrolling
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // Get PDF as data URI and display in iframe
+                const pdfDataUri = pdf.output('datauristring');
+                exportedPdfIframe.src = pdfDataUri;
+                downloadPdfLinkDisplay.href = pdfDataUri;
+                exportedPdfIframe.style.display = 'block';
+                downloadPdfLinkDisplay.style.display = 'inline-flex';
+                exportedPdfContainer.classList.add('show');
+                showToast('Pratinjau PDF siap! Anda bisa mengunduhnya.', 'success');
+
+                // Scroll to the PDF
+                exportedPdfContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (error) {
+                console.error('Error saat membuat pratinjau PDF:', error);
+                showToast('Gagal membuat pratinjau PDF. Silakan coba lagi.', 'error');
+            } finally {
+                // Clear the hidden container
+                exportContentContainer.innerHTML = '';
+                // Pastikan tombol unduh utama ditampilkan kembali setelah capture selesai (berhasil atau gagal)
+                downloadPdfBtn.style.display = 'inline-flex';
+                downloadPngBtn.style.display = 'inline-flex';
+            }
+        }
+
+        // --- Investment Simulation Logic ---
+        function calculateInvestmentGrowth(monthlyInvestment, years, annualReturnRate) {
+            const data = [];
+            let totalInvestment = 0;
+            let totalContributions = 0;
+            const monthlyReturnRate = annualReturnRate / 12;
+
+            for (let year = 0; year <= years; year++) {
+                if (year === 0) {
+                    // Initial state or start of first year
+                    data.push({ year: year, total: 0, contributions: 0 });
+                    continue;
+                }
+                for (let month = 0; month < 12; month++) {
+                    totalInvestment += monthlyInvestment;
+                    totalContributions += monthlyInvestment;
+                    totalInvestment *= (1 + monthlyReturnRate);
+                }
+                data.push({ year: year, total: totalInvestment, contributions: totalContributions });
+            }
+            return data;
+        }
+
+        function renderInvestmentChart(chartData, years) {
+            if (myChart) {
+                myChart.destroy(); // Destroy previous chart instance if it exists
+            }
+
+            const labels = chartData.map(d => `Tahun ${d.year}`);
+            const totalValues = chartData.map(d => d.total);
+            const contributions = chartData.map(d => d.contributions);
+
+            const ctx = investmentChartCanvas.getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Investasi',
+                            data: totalValues,
+                            borderColor: 'rgb(0, 210, 160)', // Mint green
+                            backgroundColor: 'rgba(0, 210, 160, 0.2)',
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 3,
+                            pointBackgroundColor: 'rgb(0, 210, 160)',
+                            pointBorderColor: '#fff',
+                            pointHoverRadius: 5,
+                            pointHoverBackgroundColor: 'rgb(0, 210, 160)',
+                            pointHoverBorderColor: '#fff',
+                        },
+                        {
+                            label: 'Total Kontribusi',
+                            data: contributions,
+                            borderColor: 'rgb(0, 122, 204)', // Blue
+                            backgroundColor: 'rgba(0, 122, 204, 0.2)',
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 3,
+                            pointBackgroundColor: 'rgb(0, 122, 204)',
+                            pointBorderColor: '#fff',
+                            pointHoverRadius: 5,
+                            pointHoverBackgroundColor: 'rgb(0, 122, 204)',
+                            pointHoverBorderColor: '#fff',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#f0f0f0', // Light text for legend
+                                font: {
+                                    family: 'Poppins',
+                                },
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += formatRupiah(context.parsed.y);
+                                    }
+                                    return label; // Return the formatted label
+                                }
+                            },
+                            titleFont: {
+                                family: 'Poppins',
+                            },
+                            bodyFont: {
+                                family: 'Poppins',
+                            },
+                            backgroundColor: 'rgba(30, 30, 30, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#f0f0f0',
+                            borderColor: 'var(--color-accent)',
+                            borderWidth: 1,
+                            cornerRadius: 6,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tahun',
+                                color: '#f0f0f0',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 14,
+                                }
+                            },
+                            ticks: {
+                                color: '#c0c0c0', // Greyish text for x-axis ticks
+                                font: {
+                                    family: 'Poppins',
+                                },
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.08)', // Subtle grid lines
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Jumlah (Rp)',
+                                color: '#f0f0f0',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 14,
+                                }
+                            },
+                            ticks: {
+                                color: '#c0c0c0', // Greyish text for y-axis ticks
+                                font: {
+                                    family: 'Poppins',
+                                },
+                                callback: function(value, index, ticks) {
+                                    return formatRupiah(value);
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.08)', // Subtle grid lines
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // --- Event Listeners ---
+        document.getElementById('algovest-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Reset previous errors
+            ageInput.classList.remove('error-input');
+            salaryInput.classList.remove('error-input');
+            document.querySelectorAll('.risk-profile-option').forEach(label => label.classList.remove('error-input'));
+            ageError.textContent = '';
+            salaryError.textContent = '';
+            riskProfileError.textContent = '';
+
+            const age = parseInt(ageInput.value);
+            const salary = parseInt(salaryInput.value.replace(/\./g, ''), 10);
+            const selectedRiskProfile = document.querySelector('input[name="risk-profile"]:checked');
+
+            let isValid = true;
+
+            if (isNaN(age) || age < 18 || age > 80) { // Updated age validation
+                ageInput.classList.add('error-input');
+                ageError.textContent = 'Usia harus antara 18 dan 80 tahun.';
+                isValid = false;
+            }
+            
+            if (isNaN(salary) || salary <= 0) { // Updated salary validation
+                salaryInput.classList.add('error-input');
+                salaryError.textContent = 'Gaji bulanan harus lebih dari Rp 0.';
+                isValid = false;
+            }
+
+            if (!selectedRiskProfile) {
+                document.querySelectorAll('.risk-profile-option').forEach(label => label.classList.add('error-input'));
+                riskProfileError.textContent = 'Mohon pilih profil risiko investasi Anda.';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showToast('Mohon perbaiki kesalahan input Anda.', 'error');
+                return;
+            }
+
+            const riskProfile = selectedRiskProfile.value;
+            const recommendation = generatePortfolioRecommendation(age, salary, riskProfile);
+
+            if (recommendation) {
+                renderPortfolio(recommendation);
+                showToast('Rekomendasi portofolio berhasil dibuat!', 'success');
+            } else {
+                // If no recommendation is found (due to logic error or missing data), hide the sections
+                portfolioResultDiv.classList.remove('show');
+                financialBreakdownDiv.classList.remove('show');
+                investmentSimulationDiv.classList.remove('show');
+                numericalSimulationResultsDiv.classList.remove('show'); // Hide numerical results
+            }
+        });
+
+        // Event listener for age input to clear error on change
+        ageInput.addEventListener('input', () => {
+            ageInput.classList.remove('error-input');
+            ageError.textContent = '';
+        });
+
+        // Tambahkan umpan balik visual untuk pilihan profil risiko
+        riskProfileOptions.forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.risk-profile-option').forEach(label => {
+                    label.classList.remove('selected', 'error-input'); // Clear error on selection
+                });
+                if (radio.checked) {
+                    radio.closest('.risk-profile-option').classList.add('selected');
+                }
+                riskProfileError.textContent = ''; // Clear error message
+            });
+            // Tangani pilihan awal jika ada (mis. dari riwayat browser)
+            if (radio.checked) {
+                 radio.closest('.risk-profile-option').classList.add('selected');
+            }
+        });
+
+        // Tangani navigasi keyboard untuk opsi profil risiko
+        document.querySelectorAll('.risk-profile-option').forEach(label => {
+            label.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    label.querySelector('input[type="radio"]').click();
+                }
+            });
+        });
+
+        // Event listener for simulation duration options
+        simulationDurationOptions.forEach(radio => {
+            radio.addEventListener('change', () => {
+                document.querySelectorAll('.simulation-option').forEach(label => {
+                    label.classList.remove('selected');
+                });
+                if (radio.checked) {
+                    radio.closest('.simulation-option').classList.add('selected');
+                }
+                simulationError.textContent = ''; // Clear simulation error
+            });
+            // Handle initial selection if any (e.g., from browser history)
+            if (radio.checked) {
+                radio.closest('.simulation-option').classList.add('selected');
+            }
+        });
+
+        // Event listener for Run Simulation button
+        runSimulationBtn.addEventListener('click', async () => { // Made async to await loading state
+            // Disable button and show loading state
+            runSimulationBtn.disabled = true;
+            runSimulationBtn.innerHTML = 'Memuat... <span class="spinner"></span>';
+
+            try {
+                if (!lastGeneratedRecommendation || lastGeneratedRecommendation.financialBreakdown.totalMonthlyInvestmentAmount <= 0) {
+                    showToast('Mohon buat rekomendasi portofolio terlebih dahulu dan pastikan ada dana untuk investasi.', 'warning');
+                    // Re-enable button and reset text
+                    runSimulationBtn.disabled = false;
+                    runSimulationBtn.innerHTML = 'Jalankan Simulasi';
+                    return;
+                }
+
+                const selectedDuration = document.querySelector('input[name="simulation-duration"]:checked');
+                if (!selectedDuration) {
+                    simulationError.textContent = 'Mohon pilih jangka waktu simulasi.';
+                    showToast('Mohon pilih jangka waktu simulasi.', 'warning');
+                    // Re-enable button and reset text
+                    runSimulationBtn.disabled = false;
+                    runSimulationBtn.innerHTML = 'Jalankan Simulasi';
+                    return;
+                }
+                simulationError.textContent = ''; // Clear error
+
+                const years = parseInt(selectedDuration.value);
+                const monthlyInvestment = lastGeneratedRecommendation.financialBreakdown.totalMonthlyInvestmentAmount;
+                const ageCategory = getAgeCategory(parseInt(ageInput.value));
+                const riskProfile = document.querySelector('input[name="risk-profile"]:checked').value;
+                const annualReturnRate = portfolioData[ageCategory][riskProfile].annualReturnRate;
+
+                // Simulate a delay for demonstration purposes (remove in production)
+                await new Promise(resolve => setTimeout(resolve, 1000)); 
+
+                const chartData = calculateInvestmentGrowth(monthlyInvestment, years, annualReturnRate);
+                renderInvestmentChart(chartData, years);
+
+                const finalInvestmentValue = chartData[chartData.length - 1].total;
+                const totalContributions = chartData[chartData.length - 1].contributions;
+                const estimatedProfit = finalInvestmentValue - totalContributions;
+
+                // Update the summary text below the chart
+                simulationResultsSummary.innerHTML = `
+                    Dengan investasi <strong>${formatRupiah(monthlyInvestment)}</strong> per bulan selama <strong>${years} tahun</strong>,
+                    total investasi Anda diperkirakan akan menjadi <strong>${formatRupiah(finalInvestmentValue)}</strong>.
+                    Ini adalah estimasi keuntungan sebesar <strong>${formatRupiah(estimatedProfit)}</strong>.
+                `;
+
+                // Display numerical results
+                displaySimTotalContributions.textContent = formatRupiah(totalContributions);
+                displaySimTotalReturn.textContent = formatRupiah(estimatedProfit);
+                displaySimFinalBalance.textContent = formatRupiah(finalInvestmentValue);
+                numericalSimulationResultsDiv.classList.add('show'); // Show the numerical results section
+
+                investmentSimulationDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                showToast('Simulasi berhasil dijalankan!', 'success');
+
+            } catch (error) {
+                console.error('Error running simulation:', error);
+                showToast('Terjadi kesalahan saat menjalankan simulasi. Silakan coba lagi.', 'error');
+            } finally {
+                // Re-enable button and reset text
+                runSimulationBtn.disabled = false;
+                runSimulationBtn.innerHTML = 'Jalankan Simulasi';
+            }
+        });
+
+
+        // Tombol tutup toast
+        toastCloseBtn.addEventListener('click', () => {
+            toastNotification.classList.remove('show');
+        });
+
+        // Karakter AlgoVest AI Interaction
+        let lastInteractionTime = 0;
+        const COOLDOWN_TIME = 2000; // 2 seconds cooldown
+
+        algovestCharacter.addEventListener('click', () => {
+            const currentTime = Date.now();
+            if (currentTime - lastInteractionTime < COOLDOWN_TIME) {
+                return; // Simply ignore rapid clicks during cooldown
+            }
+            lastInteractionTime = currentTime;
+
+            // Trigger bounce animation
+            algovestCharacter.classList.add('interacted');
+            setTimeout(() => {
+                algovestCharacter.classList.remove('interacted');
+            }, 500); // Animation duration
+
+            // Trigger mouth animation
+            algovestMouth.classList.add('mouth-talking');
+            setTimeout(() => {
+                algovestMouth.classList.remove('mouth-talking');
+            }, 1000); // Duration of talking animation
+
+            // Pilih pesan bijak secara acak dari yang belum ditampilkan
+            if (availableWiseMessages.length === 0) {
+                initializeWiseMessages(); // Reset jika semua pesan sudah ditampilkan
+            }
+            const randomIndex = Math.floor(Math.random() * availableWiseMessages.length);
+            const randomMessage = availableWiseMessages[randomIndex];
+
+            // Hapus pesan yang sudah ditampilkan dari daftar yang tersedia
+            availableWiseMessages.splice(randomIndex, 1);
+
+            showToast(randomMessage, 'wise-quote'); // Gunakan tipe 'wise-quote'
+        });
+
+        // Event listener untuk tombol unduh
+        downloadPdfBtn.addEventListener('click', exportToPdf);
+        downloadPngBtn.addEventListener('click', exportToPng);
+
+        // Status awal: sembunyikan bagian hasil
+        document.addEventListener('DOMContentLoaded', () => {
+            portfolioResultDiv.classList.remove('show');
+            financialBreakdownDiv.classList.remove('show'); // Pastikan breakdown juga tersembunyi
+            investmentSimulationDiv.classList.remove('show'); // Hide simulation section initially
+            numericalSimulationResultsDiv.classList.remove('show'); // Hide numerical results initially
+            formatSalaryInput(salaryInput); // Terapkan format pada input gaji saat DOM dimuat
+            initializeWiseMessages(); // Inisialisasi pesan bijak saat DOM dimuat
+        });
+    </script>
+</body>
+</html>

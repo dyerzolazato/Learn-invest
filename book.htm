@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Lengkap Investasi - Dari Pemula Hingga Profesional</title>
+    <!-- Preload Poppins font for better performance -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLCz7Z1xlEA.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Favicon (Default) -->
+    <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+    <!-- Link ke file CSS eksternal -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Lewati ke Konten Utama</a>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" aria-label="Memuat halaman">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Progress Reading Bar (Hanya terlihat di halaman bab) -->
+    <div id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+    <!-- Home Page -->
+    <div id="home-page" class="page active">
+        <header id="hero-section">
+            <h1>PANDUAN LENGKAP INVESTASI</h1>
+            <p>Dari Pemula Hingga Profesional</p>
+            <div class="book-code">Kode Buku: INV-DY-01 By Erdyon</div>
+            <!-- Tombol AlgoVest AI -->
+            <a href="algovest-ai.html" class="algovest-ai-button" aria-label="Kunjungi Halaman AlgoVest AI">
+                <i class="fas fa-robot"></i> AlgoVest AI
+            </a>
+            <div class="scroll-indicator" aria-hidden="true"></div>
+        </header>
+
+        <main class="container" id="main-content">
+            <!-- Garis Timeline dipindahkan ke dalam #timeline-navigation agar tingginya sesuai dengan konten timeline -->
+            <section id="chapters-overview">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    <input type="text" id="search-input" placeholder="Cari bab atau topik..." aria-label="Cari bab atau topik">
+                    <!-- Tombol X untuk menghapus teks pada search bar utama -->
+                    <button type="button" id="clear-search-btn" class="clear-search-btn" aria-label="Hapus teks pencarian">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div id="autocomplete-results" class="autocomplete-results" style="display: none;" role="listbox"></div>
+                </div>
+
+                <div class="category-tabs" role="tablist">
+                    <button class="tab-button active" data-category="all" role="tab" aria-selected="true" aria-controls="timeline-navigation">Semua</button>
+                    <button class="tab-button" data-category="fundamental" role="tab" aria-selected="false" aria-controls="timeline-navigation">Fundamental</button>
+                    <button class="tab-button" data-category="mindset" role="tab" aria-selected="false" aria-controls="timeline-navigation">Mindset</button>
+                    <button class="tab-button" data-category="strategy" role="tab" aria-selected="false" aria-controls="timeline-navigation">Strategi</button>
+                    <button class="tab-button" data-category="jenis" role="tab" aria-selected="false" aria-controls="timeline-navigation">Jenis</button>
+                    <button class="tab-button" data-category="tokoh" role="tab" aria-selected="false" aria-controls="timeline-navigation">Tokoh</button>
+                    <button class="tab-button" data-category="summary" role="tab" aria-selected="false" aria-controls="timeline-navigation">Ringkasan</button>
+                </div>
+
+                <div id="timeline-navigation">
+                    <!-- Garis Timeline dipindahkan ke sini agar tingginya sesuai dengan konten timeline -->
+                    <div id="timeline-line"></div>
+                    <!-- Timeline items will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Bagian Baru: Uji Pengetahuan Anda dengan Kuis Interaktif -->
+            <section id="quiz-section" class="quiz-section">
+                <div class="quiz-card">
+                    <div class="quiz-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="quiz-content">
+                        <h2>Uji Pengetahuan Anda!</h2>
+                        <p>Seberapa jauh pemahaman Anda tentang investasi? Ikuti kuis interaktif kami untuk mengukur pengetahuan Anda dan temukan area yang perlu ditingkatkan.</p>
+                        <p class="quiz-challenge">Tantang diri Anda dan jadilah investor yang lebih cerdas!</p>
+                        <button id="start-quiz-btn" class="start-quiz-button" aria-label="Mulai Kuis Investasi">
+                            <i class="fas fa-play-circle"></i> Mulai Quiz Sekarang!
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Panduan Lengkap Investasi. All rights reserved. By Erdyon.</p>
+        </footer>
+    </div>
+
+    <!-- Chapter Page -->
+    <div id="chapter-page" class="page">
+        <div class="chapter-page-wrapper">
+            <aside class="sidebar">
+                <!-- Hamburger menu button for mobile/tablet -->
+                <!-- Posisi tombol hamburger akan diatur melalui CSS -->
+                <button class="hamburger-menu-btn" aria-label="Buka daftar isi bab">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Sidebar content wrapper (will be toggled by hamburger) -->
+                <div class="sidebar-content-wrapper">
+                    <button class="nav-button" id="back-to-home-btn" aria-label="Kembali ke Beranda"><i class="fas fa-home"></i> Beranda</button>
+                    <div class="search-container" style="margin-top: 0; margin-bottom: 30px;">
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                        <input type="text" id="sidebar-search-input" placeholder="Cari di bab ini..." aria-label="Cari di bab ini">
+                        <!-- Tombol X untuk menghapus teks pada search bar sidebar -->
+                        <button type="button" id="clear-sidebar-search-btn" class="clear-search-btn" aria-label="Hapus teks pencarian di sidebar">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div id="sidebar-autocomplete-results" class="autocomplete-results" style="display: none;" role="listbox"></div>
+                    </div>
+
+                    <div class="chapter-list-toc">
+                        <h2>Daftar Isi</h2>
+                        <ul id="chapter-accordion-list">
+                            <!-- Accordion items will be dynamically loaded here -->
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+            <article class="main-content" id="main-chapter-content">
+                <!-- Reading Controls (Mode Baca & Pengatur Font) - Dipindahkan ke sini untuk tata letak yang lebih baik di halaman bab -->
+                <div class="reading-controls">
+                    <button id="reading-mode-toggle" aria-label="Aktifkan mode baca gelap">
+                        <i class="fas fa-book-reader"></i> Mode Baca
+                    </button>
+                    <button id="font-size-decrease" aria-label="Perkecil ukuran font"><i class="fas fa-minus"></i></button>
+                    <button id="font-size-increase" aria-label="Perbesar ukuran font"><i class="fas fa-plus"></i></button>
+                </div>
+
+                <div class="breadcrumb" aria-label="Breadcrumb">
+                    <a href="#" onclick="showPage('home-page'); return false;">Beranda</a>
+                    <span>&bull;</span>
+                    <span id="breadcrumb-chapter-title" class="current"></span>
+                    <span id="breadcrumb-subtopic-separator" style="display: none;">&bull;</span>
+                    <span id="breadcrumb-subtopic-title" class="current" style="display: none;"></span>
+                </div>
+                <!-- Judul bab akan dimuat di sini tanpa "Bab X: Bab X: Judul" -->
+                <h2 id="current-chapter-title"></h2>
+                <span id="estimated-reading-time" class="reading-time"></span>
+                <div id="chapter-content">
+                    <!-- Chapter content will be dynamically loaded here -->
+                    <div class="chapter-content-loading" style="display: none;">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+                <!-- Feedback Section dihapus sesuai permintaan -->
+                <div class="chapter-navigation">
+                    <button id="prev-chapter-btn" class="nav-button" disabled aria-label="Bab Sebelumnya"><i class="fas fa-arrow-left"></i> Sebelumnya</button>
+                    <button id="next-chapter-btn" class="nav-button" disabled aria-label="Bab Selanjutnya">Selanjutnya <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- Floating Action Button (FAB) -->
+    <!-- Posisi FAB akan diatur melalui CSS -->
+    <div class="fab-container">
+        <button class="fab" id="main-fab" aria-label="Menu navigasi cepat">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="fab-menu" id="fab-menu">
+            <button class="fab-menu-item" data-action="home" aria-label="Ke Beranda"><i class="fas fa-home"></i></button>
+            <button class="fab-menu-item" data-action="chapters" aria-label="Lihat Semua Bab"><i class="fas fa-book-open"></i></button>
+            <button class="fab-menu-item" data-action="search" aria-label="Cari"><i class="fas fa-search"></i></button>
+            <button class="fab-menu-item" data-action="bookmark" aria-label="Bookmark Saya"><i class="fas fa-bookmark"></i></button>
+            <button class="fab-menu-item" data-action="reading-list" aria-label="Daftar Bacaan Saya"><i class="fas fa-list"></i></button>
+            <button class="fab-menu-item" data-action="glossary" aria-label="Lihat Glosarium"><i class="fas fa-book-reader"></i></button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-notification" aria-live="polite" aria-atomic="true">
+        <div class="toast-icon"></div>
+        <span id="toast-message"></span>
+        <button class="toast-close-btn" aria-label="Tutup notifikasi"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- Bookmark Modal -->
+    <div id="bookmark-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="bookmark-modal-title">
+        <div class="modal-content">
+            <button class="modal-close-btn" aria-label="Tutup modal bookmark"><i class="fas fa-times"></i></button>
+            <h2 id="bookmark-modal-title">Bookmark Saya</h2>
+            <ul id="bookmark-list" class="modal-list">
+                <!-- Bookmarks will be loaded here -->
+            </ul>
+            <p id="no-bookmarks-message" class="no-items-message">Belum ada bookmark.</p>
+        </div>
+    </div>
+
+    <!-- Reading List Modal -->
+    <div id="reading-list-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="reading-list-modal-title">
+        <div class="modal-content">
+            <button class="modal-close-btn" aria-label="Tutup modal daftar bacaan"><i class="fas fa-times"></i></button>
+            <h2 id="reading-list-modal-title">Daftar Bacaan Saya</h2>
+            <ul id="reading-list-items" class="modal-list">
+                <!-- Reading list items will be loaded here -->
+            </ul>
+            <p id="no-reading-list-message" class="no-items-message">Daftar bacaan kosong.</p>
+        </div>
+    </div>
+
+    <!-- Glossary Modal -->
+    <div id="glossary-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="glossary-modal-title">
+        <div class="modal-content">
+            <button class="modal-close-btn" aria-label="Tutup modal glosarium"><i class="fas fa-times"></i></button>
+            <h2 id="glossary-modal-title">Glosarium Investasi</h2>
+            <dl id="glossary-list" class="modal-list">
+                <!-- Glossary terms will be loaded here -->
+            </dl>
+            <p id="no-glossary-message" class="no-items-message" style="display: none;">Glosarium kosong.</p>
+        </div>
+    </div>
+
+    <!-- Link ke file JavaScript eksternal -->
+    <script src="script.js"></script>
+</body>
+</html>

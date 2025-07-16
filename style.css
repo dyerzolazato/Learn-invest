@@ -1,0 +1,2749 @@
+/* CSS Variables */
+:root {
+    --color-black: #000000;
+    --color-white: #FFFFFF;
+    --color-grey: #888888;
+    --color-dark-grey: #1a1a1a;
+    --color-accent: #00D2A0; /* Green Mint */
+    --color-accent-dark: #00A07A;
+    --color-gradient-start: #00D2A0;
+    --color-gradient-end: #007ACC; /* Blue */
+    --border-radius-card: 12px;
+    --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --transition-duration: 0.3s;
+    --max-width-content: 960px;
+    --padding-section: 60px;
+    --body-font-size: 1em; /* Base font size for adjustment */
+
+    /* Notifikasi */
+    --toast-success: #28a745;
+    --toast-error: #dc3545;
+    --toast-info: #007bff;
+    --toast-warning: #ffc107;
+
+    /* Warna untuk mode baca */
+    --reading-bg: #121212;
+    --reading-text: #e0e0e0;
+    --reading-card-bg: #1e1e1e;
+    --reading-card-border: #333;
+    --reading-paragraph-text: #c0c0c0;
+    --reading-control-btn-bg: #2a2a2a;
+    --reading-control-btn-border: var(--color-accent-dark);
+
+    /* Sidebar Hamburger Menu */
+    --sidebar-width-mobile: 85%; /* Lebar sidebar di mobile */
+    --sidebar-bg-mobile: #1a1a1a; /* Background sidebar di mobile */
+    --hamburger-btn-size: 50px; /* Ukuran tombol hamburger */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--color-dark-grey);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-accent-dark);
+    border-radius: 10px;
+    transition: background var(--transition-duration);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent);
+}
+/* Firefox scrollbar */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent-dark) var(--color-dark-grey);
+}
+
+
+/* Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-black); /* Pastikan body memiliki warna latar belakang default */
+    color: var(--color-white);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    font-size: var(--body-font-size); /* Apply base font size */
+    padding-top: 0; /* Akan disesuaikan oleh JS jika reading-controls aktif */
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-duration), text-decoration var(--transition-duration);
+}
+
+a:hover {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-white);
+    margin-bottom: 0.8em;
+    font-weight: 700;
+}
+
+h1 { font-size: 4.5em; font-weight: 700; } /* 72px desktop */
+h2 { font-size: 2.25em; font-weight: 600; } /* 36px desktop */
+h3 { font-size: 1.5em; font-weight: 500; } /* 24px desktop */
+h4 { font-size: 1.2em; font-weight: 500; }
+p { font-size: 1em; font-weight: 400; margin-bottom: 1em; } /* 16px desktop */
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    h1 { font-size: 2.5em; } /* ~40px mobile */
+    h2 { font-size: 1.8em; } /* ~28px mobile */
+    h3 { font-size: 1.25em; } /* ~20px mobile */
+    p { font-size: 0.95em; }
+}
+
+/* Skip to Main Content Link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-accent);
+    color: var(--color-black);
+    padding: 8px;
+    z-index: 9999;
+    transition: top 0.3s ease-out;
+}
+.skip-link:focus {
+    top: 0;
+}
+
+/* Layout Structure */
+.container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative; /* For absolute positioning of timeline-line */
+}
+
+/* Garis Timeline Global */
+/* Dipindahkan ke dalam #timeline-navigation dan disesuaikan */
+#timeline-navigation {
+    position: relative; /* Kontainer untuk garis timeline */
+    padding: 0; /* Hapus padding vertikal agar garis bisa diatur presisi oleh JS */
+    max-width: 800px;
+    margin: 0 auto;
+    z-index: 1; /* Ensure timeline items are above the line */
+}
+
+#timeline-line {
+    position: absolute;
+    left: 50%;
+    /* top dan height akan diatur secara dinamis oleh JavaScript */
+    width: 4px; /* Meningkatkan lebar agar lebih jelas */
+    background: linear-gradient(to bottom, rgba(0, 210, 160, 0.4), rgba(0, 122, 204, 0.4)); /* Gradien transparan untuk efek visual yang lebih lembut */
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(0, 210, 160, 0.2); /* Efek glow yang lebih lembut */
+    z-index: 0; /* Behind other content */
+}
+
+section {
+    padding: var(--padding-section) 0;
+    opacity: 0; /* For scroll-triggered animations */
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    position: relative; /* For z-index to apply correctly */
+    z-index: 1; /* Ensure sections are above the timeline line */
+    background-color: transparent; /* Make section background transparent to show line */
+}
+
+section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Loading Overlay */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--color-accent);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Page Transitions */
+.page {
+    display: none;
+    opacity: 0;
+    transform: scale(0.98); /* Initial scale for transition */
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.page.active {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hero Section */
+#hero-section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: var(--color-black);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle Background Animation (Starfield) */
+#hero-section::before, #hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: repeat;
+    opacity: 0.5;
+    animation: starfield-pan 60s linear infinite;
+    pointer-events: none;
+}
+
+#hero-section::before {
+    background-image: radial-gradient(circle at 10% 20%, rgba(0,210,160,0.1) 0%, rgba(0,0,0,0) 50%),
+                      radial-gradient(circle at 90% 80%, rgba(0,122,204,0.1) 0%, rgba(0,0,0,0) 50%),
+                      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><circle cx="1" cy="1" r="0.5" fill="rgba(255,255,255,0.1)"/></svg>');
+    background-size: 10px 10px, 10px 10px, 10px 10px;
+}
+
+#hero-section::after {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.05)"/></svg>');
+    background-size: 20px 20px;
+    animation-delay: -30s; /* Offset for a more dynamic feel */
+}
+
+@keyframes starfield-pan {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+
+#hero-section h1 {
+    font-size: 4.5em; /* 72px */
+    margin-bottom: 0.1em;
+}
+
+#hero-section p {
+    font-size: 1.5em; /* 24px */
+    color: var(--color-grey);
+    margin-bottom: 1em;
+}
+
+#hero-section .book-code {
+    font-size: 1em;
+    color: var(--color-grey);
+    opacity: 0.7;
+    margin-bottom: 25px; /* Tambahkan margin bawah untuk tombol baru */
+}
+
+/* Gaya Tombol AlgoVest AI */
+.algovest-ai-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(45deg, var(--color-accent), var(--color-gradient-end));
+    color: var(--color-white); /* Ubah warna teks menjadi putih agar kontras */
+    padding: 15px 30px;
+    border-radius: 50px; /* Lebih bulat */
+    font-size: 1.2em;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0, 210, 160, 0.3);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    margin-bottom: 40px; /* Tambahkan margin bawah agar tidak terlalu dekat dengan indikator gulir */
+}
+
+.algovest-ai-button i {
+    font-size: 1.3em;
+    transition: transform 0.3s ease-in-out;
+}
+
+.algovest-ai-button:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 210, 160, 0.5);
+    color: var(--color-black); /* Kembalikan warna teks menjadi hitam saat hover */
+}
+
+.algovest-ai-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2); /* Efek kilau */
+    transform: skewX(-20deg);
+    transition: all 0.5s ease-in-out;
+    z-index: -1;
+}
+
+.algovest-ai-button:hover::before {
+    left: 100%;
+}
+
+
+.scroll-indicator {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 2px;
+    height: 80px;
+    background-color: var(--color-grey);
+    animation: pulse-scroll 2s infinite ease-in-out;
+}
+
+.scroll-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+}
+
+@keyframes pulse-scroll {
+    0% { transform: scaleY(1); opacity: 1; }
+    50% { transform: scaleY(0.5); opacity: 0.5; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+
+/* Timeline Vertical Navigation */
+/* #timeline-navigation sudah di atas */
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 60px;
+    display: flex;
+    align-items: center;
+    opacity: 0; /* For scroll-triggered animations */
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.timeline-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.timeline-item:nth-child(odd) {
+    flex-direction: row-reverse;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-dark-grey);
+    border: 2px solid var(--color-accent);
+    border-radius: 50%;
+    z-index: 2; /* Ensure dots are above the line */
+    /* Enhanced transition for active state */
+    transition: background-color var(--transition-duration) ease-in-out,
+                border-color var(--transition-duration) ease-in-out,
+                box-shadow var(--transition-duration) ease-in-out,
+                transform var(--transition-duration) ease-in-out; /* Added transform transition */
+    cursor: pointer;
+}
+
+.timeline-dot.active {
+    background-color: var(--color-accent);
+    border-color: var(--color-white); /* Highlight active dot */
+    /* Mengurangi opasitas bayangan dan glow agar tidak terlalu terang */
+    box-shadow: 0 0 0 8px rgba(0, 210, 160, 0.2), /* Mengurangi opasitas bayangan */
+                0 0 10px rgba(0, 210, 160, 0.5); /* Mengurangi radius dan opasitas glow */
+    transform: translateX(-50%) scale(1.2); /* Slightly larger when active */
+}
+
+.timeline-content {
+    width: calc(50% - 40px); /* 50% minus dot/line space */
+    padding: 20px;
+    background-color: var(--color-dark-grey);
+    border-radius: var(--border-radius-card);
+    box-shadow: var(--shadow-subtle);
+    transition: transform var(--transition-duration), box-shadow var(--transition-duration);
+    cursor: pointer;
+    position: relative; /* For z-index to work correctly */
+    z-index: 1; /* Ensure content is above the line */
+}
+
+.timeline-item:nth-child(odd) .timeline-content {
+    margin-left: auto;
+    margin-right: 40px; /* Space from dot */
+}
+
+.timeline-item:nth-child(even) .timeline-content {
+    margin-right: auto;
+    margin-left: 40px; /* Space from dot */
+}
+
+.timeline-content:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.timeline-content h3 {
+    margin-top: 0;
+    color: var(--color-accent);
+    font-size: 1.2em;
+}
+
+.timeline-content p {
+    font-size: 0.9em;
+    color: var(--color-grey);
+    margin-bottom: 0;
+}
+
+/* Category Tabs */
+.category-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    position: relative; /* For z-index to apply correctly */
+    z-index: 1; /* Ensure tabs are above the timeline line */
+    background-color: transparent; /* Make background transparent */
+}
+
+.tab-button {
+    background-color: var(--color-dark-grey);
+    color: var(--color-grey);
+    padding: 10px 20px;
+    border-radius: var(--border-radius-card);
+    cursor: pointer;
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.tab-button:hover {
+    background-color: rgba(0, 210, 160, 0.2);
+    color: var(--color-white);
+}
+
+.tab-button.active {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    box-shadow: var(--shadow-subtle);
+}
+
+/* Search Bar */
+.search-container {
+    margin: 40px auto;
+    max-width: 600px;
+    position: relative;
+    z-index: 2; /* Tingkatkan z-index agar tidak tertutup tombol lain */
+    background-color: transparent; /* Make background transparent */
+}
+
+.search-container input[type="text"] {
+    width: 100%;
+    padding: 15px 20px 15px 50px; /* Padding kiri untuk ikon search */
+    padding-right: 50px; /* Tambahkan padding kanan untuk tombol clear */
+    border: 1px solid var(--color-dark-grey);
+    border-radius: var(--border-radius-card);
+    background-color: var(--color-dark-grey);
+    color: var(--color-white);
+    font-size: 1em;
+    outline: none;
+    transition: border-color var(--transition-duration), box-shadow var(--transition-duration);
+}
+
+.search-container input[type="text"]::placeholder {
+    color: var(--color-grey);
+}
+
+.search-container input[type="text"]:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(0, 210, 160, 0.2);
+}
+
+.search-container .search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-grey);
+}
+
+/* Gaya untuk tombol clear search (X) */
+.clear-search-btn {
+    position: absolute;
+    right: 15px; /* Posisi di kanan input */
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-grey);
+    font-size: 1.2em;
+    cursor: pointer;
+    display: none; /* Sembunyikan secara default, akan ditampilkan dengan JS */
+    transition: color 0.2s ease-in-out;
+    padding: 5px; /* Tambahkan padding agar mudah diklik */
+}
+
+.clear-search-btn:hover {
+    color: var(--color-white);
+}
+
+
+.autocomplete-results {
+    position: absolute;
+    width: 100%;
+    background-color: var(--color-dark-grey);
+    border-radius: var(--border-radius-card);
+    box-shadow: var(--shadow-subtle);
+    margin-top: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.autocomplete-results div {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: var(--color-white);
+    transition: background-color var(--transition-duration);
+}
+
+.autocomplete-results div:hover,
+.autocomplete-results div.selected { /* For keyboard navigation */
+    background-color: rgba(0, 210, 160, 0.2);
+}
+
+/* Quiz Section Styles */
+.quiz-section {
+    padding: var(--padding-section) 0;
+    text-align: center;
+    /* Ubah transparansi menjadi lebih padat agar menutupi garis timeline */
+    background: linear-gradient(135deg, rgba(0, 210, 160, 0.8), rgba(0, 122, 204, 0.8));
+    border-radius: var(--border-radius-card);
+    margin-top: var(--padding-section); /* Space from previous section */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    /* Animasi background */
+    animation: background-pulse 10s infinite alternate;
+    z-index: 1; /* Ensure quiz section is above the timeline line */
+}
+
+@keyframes background-pulse {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+
+.quiz-card {
+    background-color: var(--color-dark-grey); /* Latar belakang gelap untuk kartu kuis */
+    border-radius: var(--border-radius-card);
+    padding: 40px 30px;
+    max-width: 700px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    position: relative;
+    z-index: 2; /* Di atas animasi background */
+    transform: translateY(0);
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+.quiz-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+}
+
+.quiz-icon {
+    font-size: 4em; /* Ukuran ikon yang besar */
+    color: var(--color-accent);
+    margin-bottom: 15px;
+    animation: bounce-in 0.8s ease-out; /* Animasi saat muncul */
+}
+
+@keyframes bounce-in {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+.quiz-content h2 {
+    color: var(--color-white);
+    font-size: 2.2em;
+    margin-bottom: 15px;
+}
+
+.quiz-content p {
+    color: var(--color-grey);
+    font-size: 1.1em;
+    line-height: 1.7;
+    margin-bottom: 1em;
+}
+
+.quiz-content .quiz-challenge {
+    font-style: italic;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-top: 15px;
+    margin-bottom: 30px;
+    font-size: 1.2em;
+    text-shadow: 0 0 8px rgba(0, 210, 160, 0.3);
+}
+
+.start-quiz-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(45deg, var(--color-accent), var(--color-gradient-end));
+    color: var(--color-black);
+    padding: 18px 35px;
+    border-radius: 50px;
+    font-size: 1.3em;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0, 210, 160, 0.4);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.start-quiz-button i {
+    font-size: 1.4em;
+    transition: transform 0.3s ease-in-out;
+}
+
+.start-quiz-button:hover {
+    transform: translateY(-7px) scale(1.03);
+    box-shadow: 0 15px 35px rgba(0, 210, 160, 0.6);
+    color: var(--color-white); /* Ubah warna teks saat hover */
+}
+
+.start-quiz-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2); /* Efek kilau */
+    transform: skewX(-20deg);
+    transition: all 0.5s ease-in-out;
+    z-index: -1;
+}
+
+.start-quiz-button:hover::before {
+    left: 100%;
+}
+
+.start-quiz-button:active {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 210, 160, 0.5);
+}
+
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--color-grey);
+    font-size: 0.9em;
+    border-top: 1px solid var(--color-dark-grey);
+    margin-top: var(--padding-section);
+}
+
+/* Chapter Page Layout */
+#chapter-page .chapter-page-wrapper {
+    display: flex;
+    /* Menambahkan padding di sini untuk mencegah konten terlalu pojok di desktop */
+    padding: 20px; /* Padding keseluruhan untuk wrapper */
+    gap: 30px; /* Jarak antara sidebar dan main-content */
+}
+
+#chapter-page .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px; /* Jarak dari atas */
+    height: calc(100vh - 40px); /* Tinggi penuh dikurangi margin atas/bawah */
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    /* Menambahkan padding internal untuk konten sidebar */
+    padding: 20px; /* Padding di dalam sidebar agar konten tidak mepet */
+    background-color: var(--color-dark-grey); /* Warna latar belakang sidebar */
+    border-radius: var(--border-radius-card); /* Sudut membulat untuk sidebar */
+    box-shadow: var(--shadow-subtle); /* Bayangan untuk sidebar */
+}
+
+#chapter-page .sidebar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Hamburger Menu Button (Hidden by default on desktop) */
+.hamburger-menu-btn {
+    display: none; /* Sembunyikan secara default di desktop */
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    width: var(--hamburger-btn-size);
+    height: var(--hamburger-btn-size);
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: var(--shadow-subtle);
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    border: none;
+    position: fixed; /* Posisikan tetap di layar */
+    top: 20px; /* Sesuaikan posisi awal */
+    left: 20px; /* Sesuaikan posisi awal */
+    z-index: 102; /* Pastikan di atas elemen lain */
+}
+
+.hamburger-menu-btn:hover {
+    transform: scale(1.05);
+    background-color: var(--color-accent-dark);
+}
+
+/* Sidebar Content Wrapper (Always visible on desktop) */
+.sidebar-content-wrapper {
+    display: block; /* Selalu terlihat di desktop */
+    width: 100%;
+    height: 100%;
+    padding-top: 0; /* Reset padding */
+    background-color: transparent; /* Reset background */
+    position: static; /* Reset positioning */
+    transform: translateX(0); /* Reset transform */
+    transition: none; /* No transition on desktop */
+    overflow-y: auto; /* Allow scrolling for content */
+}
+
+/* Penyesuaian untuk tombol Beranda di sidebar desktop */
+.sidebar-content-wrapper .nav-button {
+    width: 100%; /* Lebar penuh */
+    margin-bottom: 20px; /* Jarak bawah */
+    justify-content: center; /* Pusatkan teks dan ikon */
+}
+
+/* Penyesuaian untuk search-container di sidebar desktop */
+.sidebar-content-wrapper .search-container {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none; /* Hapus batasan max-width */
+    margin-bottom: 30px; /* Jarak bawah */
+}
+
+/* Penyesuaian untuk chapter-list-toc di sidebar desktop */
+.sidebar-content-wrapper .chapter-list-toc {
+    padding-left: 0; /* Hapus padding kiri tambahan jika ada */
+    padding-right: 0; /* Hapus padding kanan tambahan jika ada */
+    /* Mengatur margin-top agar tidak terlalu mepet dengan tombol beranda */
+    margin-top: 20px; /* Jarak dari elemen di atasnya */
+}
+
+
+#chapter-page .main-content {
+    flex-grow: 1;
+    border-left: none; /* Hapus border kiri karena sidebar sudah memiliki background/shadow */
+    position: relative; /* Penting untuk posisi reading-controls */
+    /* Menambahkan padding internal untuk konten utama */
+    padding: 20px; /* Padding di dalam main-content */
+    background-color: var(--color-black); /* Pastikan latar belakang konten utama */
+    border-radius: var(--border-radius-card); /* Sudut membulat untuk konten utama */
+    max-width: calc(var(--max-width-content) - 300px - 30px); /* Sesuaikan max-width agar tidak terlalu lebar */
+    margin: 0 auto; /* Pusatkan konten utama di desktop jika wrapper lebih lebar */
+}
+
+/* Chapter Content Loading Spinner */
+.chapter-content-loading {
+    min-height: 200px; /* Placeholder height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.chapter-content-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+}
+
+
+@media (max-width: 1024px) {
+    /* Tablet */
+    /* Garis timeline sudah diatur di #timeline-navigation, tidak perlu override di sini */
+    #timeline-navigation {
+        padding-top: 20px; /* Sesuaikan padding atas agar tidak terlalu mepet */
+        padding-bottom: 20px; /* Sesuaikan padding bawah */
+    }
+
+    #chapter-page .chapter-page-wrapper {
+        flex-direction: column;
+        padding: 0; /* Hapus padding wrapper di mobile */
+        gap: 0; /* Hapus gap di mobile */
+    }
+    #chapter-page .sidebar {
+        width: var(--sidebar-width-mobile); /* Gunakan variabel untuk lebar mobile */
+        position: fixed; /* Jadikan fixed untuk overlay */
+        top: 0;
+        left: 0;
+        height: 100%; /* Ambil tinggi penuh layar */
+        padding-right: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+        margin-bottom: 0;
+        background-color: var(--sidebar-bg-mobile); /* Background untuk overlay */
+        transform: translateX(-100%); /* Sembunyikan di luar layar */
+        transition: transform 0.3s ease-out;
+        z-index: 101; /* Di atas konten utama, di bawah hamburger button */
+        overflow-y: auto; /* Pastikan konten sidebar bisa discroll */
+        box-shadow: 4px 0 15px rgba(0,0,0,0.5); /* Tambahkan bayangan */
+        display: block; /* Pastikan display block untuk transisi */
+        border-radius: 0; /* Hapus border-radius di mobile */
+    }
+
+    #chapter-page .sidebar.active {
+        transform: translateX(0); /* Tampilkan saat aktif */
+    }
+
+    /* Tampilkan tombol hamburger di mobile/tablet */
+    .hamburger-menu-btn {
+        display: flex; /* Tampilkan tombol hamburger */
+        top: 20px; /* Sesuaikan posisi tombol hamburger */
+        left: 20px;
+    }
+
+    /* Sembunyikan sidebar-content-wrapper saat tidak aktif di mobile/tablet */
+    .sidebar-content-wrapper {
+        padding: 80px 20px 20px 20px; /* Padding atas untuk memberi ruang tombol hamburger */
+        display: block; /* Pastikan tetap block untuk transisi */
+    }
+
+    /* Perbaikan: Atur padding-left untuk sidebar-content-wrapper di mobile agar tulisan tidak terlalu pojok kiri */
+    .sidebar-content-wrapper .nav-button,
+    .sidebar-content-wrapper .search-container,
+    .sidebar-content-wrapper .chapter-list-toc {
+        padding-left: 0; /* Reset padding karena sudah ada padding di .sidebar */
+        padding-right: 0; /* Reset padding */
+    }
+
+
+    #chapter-page .main-content {
+        padding-left: 0;
+        border-left: none;
+        padding: 20px; /* Padding default untuk mobile */
+        max-width: 100%; /* Gunakan lebar penuh di mobile */
+        margin: 0; /* Hapus margin auto di mobile */
+        border-radius: 0; /* Hapus border-radius di mobile */
+    }
+}
+
+/* Progress Reading Bar */
+#progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 5px;
+    background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+    z-index: 999;
+    transition: width 0.1s linear;
+}
+
+/* Sticky Table of Contents (Sidebar Chapter List) */
+.chapter-list-toc h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: var(--color-accent);
+}
+
+.chapter-list-toc ul {
+    list-style: none;
+}
+
+.chapter-list-toc li a {
+    display: flex; /* Use flex for icon alignment */
+    align-items: center;
+    padding: 8px 0;
+    color: var(--color-grey);
+    transition: color var(--transition-duration), border-left-color var(--transition-duration);
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    position: relative; /* For bookmark icon */
+}
+
+.chapter-list-toc li a:hover {
+    color: var(--color-white);
+    border-left-color: var(--color-accent);
+}
+
+.chapter-list-toc li a.active {
+    color: var(--color-white);
+    font-weight: 600;
+    border-left-color: var(--color-accent);
+}
+
+.chapter-list-toc li a .bookmark-icon {
+    color: var(--color-accent);
+    margin-left: 5px;
+    font-size: 0.8em;
+    display: none;
+}
+.chapter-list-toc li a.bookmarked .bookmark-icon {
+    display: inline-block;
+}
+
+/* Reading Progress Circle */
+.reading-progress-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--color-grey);
+    margin-right: 8px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.reading-progress-circle .fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-accent);
+    transition: height 0.3s ease-out;
+}
+
+/* Accordion Style Chapter List */
+.accordion-item {
+    margin-bottom: 10px;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-dark-grey);
+    padding: 12px 15px;
+    border-radius: var(--border-radius-card);
+    cursor: pointer;
+    transition: background-color var(--transition-duration);
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.accordion-header:hover {
+    background-color: rgba(0, 210, 160, 0.1);
+}
+
+.accordion-header h4 {
+    margin: 0;
+    font-size: 1em;
+}
+
+.accordion-header .icon {
+    transition: transform var(--transition-duration);
+}
+
+.accordion-header.active .icon {
+    transform: rotate(90deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 var(--border-radius-card) var(--border-radius-card);
+}
+
+.accordion-content ul {
+    list-style: none;
+    padding: 10px 0 10px 20px;
+}
+
+.accordion-content ul li a {
+    padding: 5px 0;
+    font-size: 0.9em;
+    color: var(--color-grey);
+    display: flex; /* Use flex for icon alignment */
+    align-items: center;
+    border-left: none; /* Override default */
+}
+
+.accordion-content ul li a:hover {
+    color: var(--color-white);
+    text-decoration: none;
+}
+
+/* Card-Based Content System */
+.content-card {
+    background-color: var(--color-dark-grey);
+    border-radius: var(--border-radius-card);
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-subtle);
+    transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration) ease-out;
+    position: relative; /* For card-actions positioning */
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.content-card h3 {
+    color: var(--color-accent);
+    margin-bottom: 1em;
+}
+
+.content-card p {
+    color: var(--color-white);
+    line-height: 1.7; /* Meningkatkan keterbacaan paragraf */
+}
+
+/* New styles for card-actions container */
+.content-card .card-actions {
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    margin-top: 20px; /* Space from content above */
+    justify-content: flex-end; /* Align buttons to the right */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Base style for bookmark button */
+.bookmark-section-btn {
+    background-color: transparent; /* Default: transparent */
+    color: var(--color-accent); /* Accent color for text and icon */
+    border: 2px solid var(--color-accent); /* Accent border */
+    padding: 10px 20px;
+    border-radius: var(--border-radius-card);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-duration) ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.bookmark-section-btn i {
+    font-size: 1.1em;
+}
+
+.bookmark-section-btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Style when bookmarked */
+.bookmark-section-btn.bookmarked {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    border-color: var(--color-accent); /* Keep border same as fill */
+    box-shadow: 0 4px 8px rgba(0, 210, 160, 0.4);
+}
+
+.bookmark-section-btn.bookmarked:hover {
+    background-color: var(--color-accent-dark);
+    box-shadow: 0 6px 12px rgba(0, 210, 160, 0.5);
+}
+
+/* Adjust share button to fit the new design and be always visible */
+.share-section-btn {
+    background-color: var(--color-dark-grey); /* Solid background */
+    color: var(--color-white);
+    border: 2px solid var(--color-dark-grey); /* Add a subtle border */
+    padding: 10px 20px;
+    border-radius: var(--border-radius-card);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-duration) ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+    box-shadow: none;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.share-section-btn:hover {
+    color: var(--color-accent);
+    background-color: rgba(0, 210, 160, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.share-section-btn.copied {
+    background-color: var(--toast-success);
+    color: var(--color-white);
+    border-color: var(--toast-success);
+    transform: scale(1);
+}
+
+
+/* Alternating background for full-width sections */
+/* Navigation Buttons (Prev/Next) */
+.chapter-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-dark-grey);
+}
+
+.nav-button {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    padding: 12px 25px;
+    border-radius: var(--border-radius-card);
+    font-weight: 600;
+    transition: background-color var(--transition-duration), transform var(--transition-duration), box-shadow var(--transition-duration);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.nav-button:hover {
+    background-color: var(--color-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nav-button:disabled {
+    background-color: var(--color-grey);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Floating Action Button (FAB) */
+.fab-container {
+    position: fixed;
+    z-index: 100;
+    bottom: 20px;
+    right: 20px;
+}
+
+.fab {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: var(--shadow-subtle);
+    transition: transform var(--transition-duration), background-color var(--transition-duration);
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.fab:hover {
+    transform: scale(1.05);
+    background-color: var(--color-accent-dark);
+}
+
+.fab-menu {
+    position: absolute;
+    bottom: 70px; /* Above FAB */
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transform-origin: bottom right;
+    transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out, visibility var(--transition-duration);
+}
+
+.fab-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.fab-menu-item {
+    background-color: var(--color-dark-grey);
+    color: var(--color-white);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    box-shadow: var(--shadow-subtle);
+    transition: transform var(--transition-duration), background-color var(--transition-duration);
+    cursor: pointer;
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.fab-menu-item:hover {
+    transform: scale(1.1);
+    background-color: var(--color-accent);
+    color: var(--color-black);
+}
+
+/* Reading Mode Toggle & Font Adjuster (Diposisikan di dalam main-content) */
+.reading-controls {
+    position: absolute; /* Menggunakan absolute relatif terhadap main-content */
+    top: 0; /* Sesuaikan dengan padding-top main-content jika ada */
+    right: 0;
+    z-index: 50; /* Di atas konten, tapi di bawah modal */
+    display: flex;
+    gap: 10px;
+    padding: 10px 0; /* Padding agar tidak terlalu mepet ke atas */
+}
+
+.reading-controls button {
+    background-color: var(--color-dark-grey);
+    color: var(--color-white);
+    padding: 10px 15px;
+    border-radius: var(--border-radius-card);
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+    border: none;
+}
+
+.reading-controls button:hover {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+}
+
+/* Reading Mode Styles (Dark Theme Only) */
+body.reading-mode {
+    background-color: var(--reading-bg); /* Darker background for reading mode */
+    color: var(--reading-text); /* Lighter text for contrast */
+}
+
+body.reading-mode h1,
+body.reading-mode h2,
+body.reading-mode h3,
+body.reading-mode h4,
+body.reading-mode h5,
+body.reading-mode h6 {
+    color: var(--color-accent); /* Judul tetap menonjol */
+}
+
+/* Sembunyikan elemen yang tidak relevan di mode baca */
+body.reading-mode #home-page,
+body.reading-mode footer,
+body.reading-mode .sidebar,
+body.reading-mode .fab-container,
+body.reading-mode .chapter-navigation,
+body.reading-mode #progress-bar { /* Progress bar juga disembunyikan di mode baca */
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Pastikan #chapter-page tetap terlihat di mode baca */
+body.reading-mode #chapter-page {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: scale(1) !important;
+}
+
+
+/* Sesuaikan tampilan halaman chapter di mode baca */
+body.reading-mode #main-chapter-content {
+    width: 100%; /* Gunakan lebar penuh */
+    max-width: 800px; /* Batasi lebar konten untuk kenyamanan baca */
+    margin: 0 auto; /* Pusatkan konten */
+    padding: 40px 20px !important; /* Sesuaikan padding */
+    border-left: none !important; /* Hapus border samping */
+    padding-top: 80px !important; /* Tambahkan padding atas untuk reading-controls */
+}
+
+body.reading-mode .content-card {
+    background-color: var(--reading-card-bg); /* Warna kartu yang lebih gelap */
+    color: var(--reading-text);
+    box-shadow: none; /* Hapus bayangan untuk tampilan yang lebih bersih */
+    border: 1px solid var(--reading-card-border); /* Border tipis */
+    padding: 25px; /* Sedikit lebih kecil */
+    margin-bottom: 25px;
+}
+
+body.reading-mode .content-card h3 {
+    color: var(--color-accent);
+    font-size: 1.4em; /* Sedikit lebih besar untuk judul subtopik */
+    margin-bottom: 0.8em;
+}
+
+body.reading-mode .content-card p {
+    color: var(--reading-paragraph-text); /* Warna teks paragraf yang lebih lembut */
+    line-height: 1.8; /* Tingkatkan line-height untuk keterbacaan */
+    margin-bottom: 1em;
+}
+
+body.reading-mode .content-card ul,
+body.reading-mode .content-card ol {
+    padding-left: 25px; /* Sesuaikan indentasi daftar */
+    margin-bottom: 1em;
+}
+
+body.reading-mode .content-card li {
+    margin-bottom: 0.5em;
+    color: var(--reading-paragraph-text);
+}
+
+body.reading-mode .content-card strong {
+    color: var(--color-white); /* Teks tebal lebih menonjol */
+}
+
+body.reading-mode .share-section-btn,
+body.reading-mode .bookmark-section-btn { /* Sembunyikan tombol bookmark dan bagikan di mode baca */
+    display: none !important;
+}
+
+/* Pastikan elemen-elemen ini tetap terlihat dan berfungsi di mode baca */
+body.reading-mode .reading-controls {
+    position: absolute; /* Tetap absolute */
+    top: 20px; /* Sesuaikan posisi */
+    right: 20px;
+    left: auto;
+    transform: none;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: transparent; /* Pastikan tidak ada background */
+    box-shadow: none;
+}
+
+body.reading-mode .reading-controls button {
+    background-color: var(--reading-control-btn-bg); /* Warna tombol kontrol yang lebih gelap */
+    color: var(--color-accent);
+    border: 1px solid var(--reading-control-btn-border);
+}
+
+body.reading-mode .reading-controls button:hover {
+    background-color: var(--color-accent-dark);
+    color: var(--color-black);
+}
+
+/* Breadcrumb di mode baca */
+body.reading-mode .breadcrumb {
+    color: #888;
+    margin-bottom: 30px; /* Beri lebih banyak ruang */
+    text-align: center;
+}
+body.reading-mode .breadcrumb a {
+    color: #888;
+}
+body.reading-mode .breadcrumb a:hover {
+    color: #e0e0e0;
+}
+body.reading-mode .breadcrumb span {
+    color: #555;
+}
+body.reading-mode .breadcrumb .current {
+    color: #e0e0e0;
+}
+
+/* Estimated Reading Time di mode baca */
+body.reading-mode #estimated-reading-time {
+    color: #888;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    padding: 10px 0;
+    font-size: 0.9em;
+    color: var(--color-grey);
+    margin-bottom: 20px;
+}
+.breadcrumb a {
+    color: var(--color-grey);
+    text-decoration: none;
+}
+.breadcrumb a:hover {
+    color: var(--color-white);
+    text-decoration: underline;
+}
+.breadcrumb span {
+    margin: 0 5px;
+    color: var(--color-dark-grey); /* Small dot separator */
+}
+.breadcrumb .current {
+    color: var(--color-white);
+    font-weight: 500;
+}
+
+/* Estimated Reading Time */
+.reading-time {
+    font-size: 0.85em;
+    color: var(--color-grey);
+    margin-top: -15px; /* Adjust position relative to title */
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* Toast Notification */
+#toast-notification {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    background-color: var(--color-dark-grey);
+    color: var(--color-white);
+    padding: 15px 25px;
+    border-radius: var(--border-radius-card);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 280px;
+    max-width: 90%;
+    bottom: 20px;
+}
+#toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+}
+
+.toast-icon {
+    font-size: 1.5em;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent); /* Default icon color */
+}
+
+#toast-notification.success .toast-icon { color: var(--toast-success); }
+#toast-notification.error .toast-icon { color: var(--toast-error); }
+#toast-notification.info .toast-icon { color: var(--toast-info); }
+#toast-notification.warning .toast-icon { color: var(--toast-warning); }
+
+
+#toast-message {
+    flex-grow: 1;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.toast-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-grey);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    padding: 5px;
+}
+.toast-close-btn:hover {
+    color: var(--color-white);
+}
+
+/* Modal Styles (Bookmark, Reading List, Glossary) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+}
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: var(--color-dark-grey);
+    padding: 30px;
+    border-radius: var(--border-radius-card);
+    box-shadow: var(--shadow-subtle);
+    width: 90%;
+    max-width: 500px;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-out;
+    position: relative;
+}
+.modal-overlay.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--color-grey);
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: color var(--transition-duration);
+}
+.modal-close-btn:hover {
+    color: var(--color-white);
+}
+
+.modal-content h2 {
+    color: var(--color-accent);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.modal-list {
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px; /* For scrollbar */
+}
+.modal-list li {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-list li a {
+    color: var(--color-white);
+    flex-grow: 1;
+    margin-right: 10px;
+}
+.modal-list li a:hover {
+    color: var(--color-accent);
+}
+.modal-list li .remove-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: color var(--transition-duration);
+}
+.modal-list li .remove-btn:hover {
+    color: #ff3b3b;
+}
+
+.modal-list .no-items-message {
+    color: var(--color-grey);
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+
+/* Glossary Specific Styles */
+#glossary-list dt {
+    font-weight: 600;
+    color: var(--color-white);
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+#glossary-list dd {
+    margin-left: 0;
+    color: var(--color-grey);
+    margin-bottom: 10px;
+}
+
+/* Quiz Placeholder - Dihapus dari HTML, tetapi gaya tetap ada jika diperlukan di masa mendatang */
+.quiz-placeholder {
+    display: none; /* Sembunyikan secara default karena fitur dihapus */
+    background-color: rgba(0, 210, 160, 0.1);
+    border: 1px dashed var(--color-accent);
+    padding: 20px;
+    border-radius: var(--border-radius-card);
+    text-align: center;
+    margin-top: 40px;
+}
+.quiz-placeholder h4 {
+    color: var(--color-accent);
+    margin-bottom: 15px;
+}
+.quiz-placeholder button {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius-card);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+.quiz-placeholder button:hover {
+    background-color: var(--color-accent-dark);
+    transform: translateY(-2px);
+}
+
+/* AI Portfolio Section - Dihapus dari HTML, tetapi gaya tetap ada jika diperlukan di masa mendatang */
+.ai-portfolio-input-card,
+.ai-portfolio-result-card {
+    display: none; /* Sembunyikan secara default karena fitur dihapus */
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background-color: #fff;
+        color: #000;
+        font-family: 'Times New Roman', serif;
+        font-size: 12pt;
+    }
+    .fab-container, #progress-bar, .reading-controls,
+    #hero-section, .search-container, footer,
+    #chapter-page .sidebar, .chapter-navigation,
+    #toast-notification, .modal-overlay,
+    .category-tabs, #timeline-navigation,
+    .share-section-btn, .reading-progress-circle, .quiz-placeholder,
+    .skip-link, .ai-portfolio-input-card, .ai-portfolio-result-card,
+    .hamburger-menu-btn { /* Sembunyikan tombol hamburger saat print */
+        display: none !important;
+    }
+    .page, .page.active {
+        display: block;
+        opacity: 1;
+        transform: none;
+    }
+    .container, #chapter-page .main-content {
+        max-width: none;
+        margin: 0;
+        padding: 0 20px;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #000;
+        page-break-after: avoid;
+    }
+    p {
+        orphans: 3;
+        widows: 3;
+    }
+    .content-card {
+        background-color: #fff;
+        border: 1px solid #eee;
+        box-shadow: none;
+        page-break-inside: avoid;
+    }
+    #chapter-page .sidebar { /* Pastikan sidebar tidak muncul saat print */
+        display: none !important;
+    }
+    .sidebar-content-wrapper { /* Pastikan konten sidebar tidak muncul saat print */
+        display: none !important;
+    }
+}
+
+/* Responsive Design Breakpoints */
+@media (min-width: 1025px) {
+    /* Penyesuaian khusus untuk desktop */
+    #chapter-page .chapter-page-wrapper {
+        max-width: 1200px; /* Lebar maksimum yang lebih besar untuk konten */
+        margin: 0 auto; /* Pusatkan wrapper di layar desktop yang sangat lebar */
+        padding: 30px; /* Tambahkan padding di sekitar wrapper */
+        gap: 40px; /* Tingkatkan jarak antara sidebar dan main-content */
+    }
+
+    #chapter-page .sidebar {
+        width: 320px; /* Lebar sidebar yang sedikit lebih besar */
+        padding: 30px; /* Padding internal yang lebih nyaman */
+    }
+
+    #chapter-page .main-content {
+        padding: 30px; /* Padding internal yang lebih nyaman */
+        max-width: calc(1200px - 320px - 40px); /* Sesuaikan max-width konten utama */
+    }
+
+    /* Penyesuaian posisi tombol floating untuk desktop */
+    .fab-container {
+        bottom: 40px; /* Turunkan posisi FAB agar tidak terlalu tinggi */
+        right: 40px;
+    }
+
+    #toast-notification {
+        bottom: 100px; /* Di atas FAB */
+    }
+}
+
+@media (max-width: 1440px) {
+    :root {
+        --max-width-content: 1100px;
+    }
+}
+
+@media (max-width: 1024px) {
+    /* Tablet */
+    :root {
+        --max-width-content: 90%;
+        --padding-section: 40px;
+    }
+    #hero-section h1 { font-size: 3.5em; }
+    #hero-section p { font-size: 1.2em; }
+    .scroll-indicator { display: none; } /* Hide on smaller screens */
+
+    /* Garis timeline sudah diatur di #timeline-navigation, tidak perlu override di sini */
+    #timeline-navigation {
+        padding-top: 20px; /* Sesuaikan padding atas agar tidak terlalu mepet */
+        padding-bottom: 20px; /* Sesuaikan padding bawah */
+    }
+
+    #chapter-page .chapter-page-wrapper {
+        flex-direction: column;
+        padding: 0; /* Hapus padding wrapper di mobile */
+        gap: 0; /* Hapus gap di mobile */
+    }
+    #chapter-page .sidebar {
+        width: var(--sidebar-width-mobile); /* Gunakan variabel untuk lebar mobile */
+        position: fixed; /* Jadikan fixed untuk overlay */
+        top: 0;
+        left: 0;
+        height: 100%; /* Ambil tinggi penuh layar */
+        padding-right: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+        margin-bottom: 0;
+        background-color: var(--sidebar-bg-mobile); /* Background untuk overlay */
+        transform: translateX(-100%); /* Sembunyikan di luar layar */
+        transition: transform 0.3s ease-out;
+        z-index: 101; /* Di atas konten utama, di bawah hamburger button */
+        overflow-y: auto; /* Pastikan konten sidebar bisa discroll */
+        box-shadow: 4px 0 15px rgba(0,0,0,0.5); /* Tambahkan bayangan */
+        display: block; /* Pastikan display block untuk transisi */
+        border-radius: 0; /* Hapus border-radius di mobile */
+    }
+
+    #chapter-page .sidebar.active {
+        transform: translateX(0); /* Tampilkan saat aktif */
+    }
+
+    /* Tampilkan tombol hamburger di mobile/tablet */
+    .hamburger-menu-btn {
+        display: flex; /* Tampilkan tombol hamburger */
+        top: 20px; /* Sesuaikan posisi tombol hamburger */
+        left: 20px;
+    }
+
+    /* Sembunyikan sidebar-content-wrapper saat tidak aktif di mobile/tablet */
+    .sidebar-content-wrapper {
+        padding: 80px 20px 20px 20px; /* Padding atas untuk memberi ruang tombol hamburger */
+        display: block; /* Pastikan tetap block untuk transisi */
+    }
+
+    /* Perbaikan: Atur padding-left untuk sidebar-content-wrapper di mobile agar tulisan tidak terlalu pojok kiri */
+    .sidebar-content-wrapper .nav-button,
+    .sidebar-content-wrapper .search-container,
+    .sidebar-content-wrapper .chapter-list-toc {
+        padding-left: 0; /* Reset padding karena sudah ada padding di .sidebar */
+        padding-right: 0; /* Reset padding */
+    }
+
+
+    #chapter-page .main-content {
+        padding-left: 0;
+        border-left: none;
+        padding: 20px; /* Padding default untuk mobile */
+        max-width: 100%; /* Gunakan lebar penuh di mobile */
+        margin: 0; /* Hapus margin auto di mobile */
+        border-radius: 0; /* Hapus border-radius di mobile */
+    }
+}
+
+/* Progress Reading Bar */
+#progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 5px;
+    background: linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-end));
+    z-index: 999;
+    transition: width 0.1s linear;
+}
+
+/* Sticky Table of Contents (Sidebar Chapter List) */
+.chapter-list-toc h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: var(--color-accent);
+}
+
+.chapter-list-toc ul {
+    list-style: none;
+}
+
+.chapter-list-toc li a {
+    display: flex; /* Use flex for icon alignment */
+    align-items: center;
+    padding: 8px 0;
+    color: var(--color-grey);
+    transition: color var(--transition-duration), border-left-color var(--transition-duration);
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    position: relative; /* For bookmark icon */
+}
+
+.chapter-list-toc li a:hover {
+    color: var(--color-white);
+    border-left-color: var(--color-accent);
+}
+
+.chapter-list-toc li a.active {
+    color: var(--color-white);
+    font-weight: 600;
+    border-left-color: var(--color-accent);
+}
+
+.chapter-list-toc li a .bookmark-icon {
+    color: var(--color-accent);
+    margin-left: 5px;
+    font-size: 0.8em;
+    display: none;
+}
+.chapter-list-toc li a.bookmarked .bookmark-icon {
+    display: inline-block;
+}
+
+/* Reading Progress Circle */
+.reading-progress-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--color-grey);
+    margin-right: 8px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.reading-progress-circle .fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-accent);
+    transition: height 0.3s ease-out;
+}
+
+/* Accordion Style Chapter List */
+.accordion-item {
+    margin-bottom: 10px;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-dark-grey);
+    padding: 12px 15px;
+    border-radius: var(--border-radius-card);
+    cursor: pointer;
+    transition: background-color var(--transition-duration);
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.accordion-header:hover {
+    background-color: rgba(0, 210, 160, 0.1);
+}
+
+.accordion-header h4 {
+    margin: 0;
+    font-size: 1em;
+}
+
+.accordion-header .icon {
+    transition: transform var(--transition-duration);
+}
+
+.accordion-header.active .icon {
+    transform: rotate(90deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 var(--border-radius-card) var(--border-radius-card);
+}
+
+.accordion-content ul {
+    list-style: none;
+    padding: 10px 0 10px 20px;
+}
+
+.accordion-content ul li a {
+    padding: 5px 0;
+    font-size: 0.9em;
+    color: var(--color-grey);
+    display: flex; /* Use flex for icon alignment */
+    align-items: center;
+    border-left: none; /* Override default */
+}
+
+.accordion-content ul li a:hover {
+    color: var(--color-white);
+    text-decoration: none;
+}
+
+/* Card-Based Content System */
+.content-card {
+    background-color: var(--color-dark-grey);
+    border-radius: var(--border-radius-card);
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-subtle);
+    transition: transform var(--transition-duration) ease-out, box-shadow var(--transition-duration) ease-out;
+    position: relative; /* For card-actions positioning */
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.content-card h3 {
+    color: var(--color-accent);
+    margin-bottom: 1em;
+}
+
+.content-card p {
+    color: var(--color-white);
+    line-height: 1.7; /* Meningkatkan keterbacaan paragraf */
+}
+
+/* New styles for card-actions container */
+.content-card .card-actions {
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    margin-top: 20px; /* Space from content above */
+    justify-content: flex-end; /* Align buttons to the right */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Base style for bookmark button */
+.bookmark-section-btn {
+    background-color: transparent; /* Default: transparent */
+    color: var(--color-accent); /* Accent color for text and icon */
+    border: 2px solid var(--color-accent); /* Accent border */
+    padding: 10px 20px;
+    border-radius: var(--border-radius-card);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-duration) ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.bookmark-section-btn i {
+    font-size: 1.1em;
+}
+
+.bookmark-section-btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Style when bookmarked */
+.bookmark-section-btn.bookmarked {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    border-color: var(--color-accent); /* Keep border same as fill */
+    box-shadow: 0 4px 8px rgba(0, 210, 160, 0.4);
+}
+
+.bookmark-section-btn.bookmarked:hover {
+    background-color: var(--color-accent-dark);
+    box-shadow: 0 6px 12px rgba(0, 210, 160, 0.5);
+}
+
+/* Adjust share button to fit the new design and be always visible */
+.share-section-btn {
+    background-color: var(--color-dark-grey); /* Solid background */
+    color: var(--color-white);
+    border: 2px solid var(--color-dark-grey); /* Add a subtle border */
+    padding: 10px 20px;
+    border-radius: var(--border-radius-card);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-duration) ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+    box-shadow: none;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.share-section-btn:hover {
+    color: var(--color-accent);
+    background-color: rgba(0, 210, 160, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.share-section-btn.copied {
+    background-color: var(--toast-success);
+    color: var(--color-white);
+    border-color: var(--toast-success);
+    transform: scale(1);
+}
+
+
+/* Alternating background for full-width sections */
+/* Navigation Buttons (Prev/Next) */
+.chapter-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-dark-grey);
+}
+
+.nav-button {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    padding: 12px 25px;
+    border-radius: var(--border-radius-card);
+    font-weight: 600;
+    transition: background-color var(--transition-duration), transform var(--transition-duration), box-shadow var(--transition-duration);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.nav-button:hover {
+    background-color: var(--color-accent-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nav-button:disabled {
+    background-color: var(--color-grey);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Floating Action Button (FAB) */
+.fab-container {
+    position: fixed;
+    z-index: 100;
+    bottom: 20px;
+    right: 20px;
+}
+
+.fab {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: var(--shadow-subtle);
+    transition: transform var(--transition-duration), background-color var(--transition-duration);
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.fab:hover {
+    transform: scale(1.05);
+    background-color: var(--color-accent-dark);
+}
+
+.fab-menu {
+    position: absolute;
+    bottom: 70px; /* Above FAB */
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    transform-origin: bottom right;
+    transition: opacity var(--transition-duration) ease-out, transform var(--transition-duration) ease-out, visibility var(--transition-duration);
+}
+
+.fab-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.fab-menu-item {
+    background-color: var(--color-dark-grey);
+    color: var(--color-white);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    box-shadow: var(--shadow-subtle);
+    transition: transform var(--transition-duration), background-color var(--transition-duration);
+    cursor: pointer;
+    border: none; /* Tambahkan ini untuk konsistensi */
+}
+
+.fab-menu-item:hover {
+    transform: scale(1.1);
+    background-color: var(--color-accent);
+    color: var(--color-black);
+}
+
+/* Reading Mode Toggle & Font Adjuster (Diposisikan di dalam main-content) */
+.reading-controls {
+    position: absolute; /* Menggunakan absolute relatif terhadap main-content */
+    top: 0; /* Sesuaikan dengan padding-top main-content jika ada */
+    right: 0;
+    z-index: 50; /* Di atas konten, tapi di bawah modal */
+    display: flex;
+    gap: 10px;
+    padding: 10px 0; /* Padding agar tidak terlalu mepet ke atas */
+}
+
+.reading-controls button {
+    background-color: var(--color-dark-grey);
+    color: var(--color-white);
+    padding: 10px 15px;
+    border-radius: var(--border-radius-card);
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color var(--transition-duration), color var(--transition-duration);
+    border: none;
+}
+
+.reading-controls button:hover {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+}
+
+/* Reading Mode Styles (Dark Theme Only) */
+body.reading-mode {
+    background-color: var(--reading-bg); /* Darker background for reading mode */
+    color: var(--reading-text); /* Lighter text for contrast */
+}
+
+body.reading-mode h1,
+body.reading-mode h2,
+body.reading-mode h3,
+body.reading-mode h4,
+body.reading-mode h5,
+body.reading-mode h6 {
+    color: var(--color-accent); /* Judul tetap menonjol */
+}
+
+/* Sembunyikan elemen yang tidak relevan di mode baca */
+body.reading-mode #home-page,
+body.reading-mode footer,
+body.reading-mode .sidebar,
+body.reading-mode .fab-container,
+body.reading-mode .chapter-navigation,
+body.reading-mode #progress-bar { /* Progress bar juga disembunyikan di mode baca */
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Pastikan #chapter-page tetap terlihat di mode baca */
+body.reading-mode #chapter-page {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: scale(1) !important;
+}
+
+
+/* Sesuaikan tampilan halaman chapter di mode baca */
+body.reading-mode #main-chapter-content {
+    width: 100%; /* Gunakan lebar penuh */
+    max-width: 800px; /* Batasi lebar konten untuk kenyamanan baca */
+    margin: 0 auto; /* Pusatkan konten */
+    padding: 40px 20px !important; /* Sesuaikan padding */
+    border-left: none !important; /* Hapus border samping */
+    padding-top: 80px !important; /* Tambahkan padding atas untuk reading-controls */
+}
+
+body.reading-mode .content-card {
+    background-color: var(--reading-card-bg); /* Warna kartu yang lebih gelap */
+    color: var(--reading-text);
+    box-shadow: none; /* Hapus bayangan untuk tampilan yang lebih bersih */
+    border: 1px solid var(--reading-card-border); /* Border tipis */
+    padding: 25px; /* Sedikit lebih kecil */
+    margin-bottom: 25px;
+}
+
+body.reading-mode .content-card h3 {
+    color: var(--color-accent);
+    font-size: 1.4em; /* Sedikit lebih besar untuk judul subtopik */
+    margin-bottom: 0.8em;
+}
+
+body.reading-mode .content-card p {
+    color: var(--reading-paragraph-text); /* Warna teks paragraf yang lebih lembut */
+    line-height: 1.8; /* Tingkatkan line-height untuk keterbacaan */
+    margin-bottom: 1em;
+}
+
+body.reading-mode .content-card ul,
+body.reading-mode .content-card ol {
+    padding-left: 25px; /* Sesuaikan indentasi daftar */
+    margin-bottom: 1em;
+}
+
+body.reading-mode .content-card li {
+    margin-bottom: 0.5em;
+    color: var(--reading-paragraph-text);
+}
+
+body.reading-mode .content-card strong {
+    color: var(--color-white); /* Teks tebal lebih menonjol */
+}
+
+body.reading-mode .share-section-btn,
+body.reading-mode .bookmark-section-btn { /* Sembunyikan tombol bookmark dan bagikan di mode baca */
+    display: none !important;
+}
+
+/* Pastikan elemen-elemen ini tetap terlihat dan berfungsi di mode baca */
+body.reading-mode .reading-controls {
+    position: absolute; /* Tetap absolute */
+    top: 20px; /* Sesuaikan posisi */
+    right: 20px;
+    left: auto;
+    transform: none;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: transparent; /* Pastikan tidak ada background */
+    box-shadow: none;
+}
+
+body.reading-mode .reading-controls button {
+    background-color: var(--reading-control-btn-bg); /* Warna tombol kontrol yang lebih gelap */
+    color: var(--color-accent);
+    border: 1px solid var(--reading-control-btn-border);
+}
+
+body.reading-mode .reading-controls button:hover {
+    background-color: var(--color-accent-dark);
+    color: var(--color-black);
+}
+
+/* Breadcrumb di mode baca */
+body.reading-mode .breadcrumb {
+    color: #888;
+    margin-bottom: 30px; /* Beri lebih banyak ruang */
+    text-align: center;
+}
+body.reading-mode .breadcrumb a {
+    color: #888;
+}
+body.reading-mode .breadcrumb a:hover {
+    color: #e0e0e0;
+}
+body.reading-mode .breadcrumb span {
+    color: #555;
+}
+body.reading-mode .breadcrumb .current {
+    color: #e0e0e0;
+}
+
+/* Estimated Reading Time di mode baca */
+body.reading-mode #estimated-reading-time {
+    color: #888;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    padding: 10px 0;
+    font-size: 0.9em;
+    color: var(--color-grey);
+    margin-bottom: 20px;
+}
+.breadcrumb a {
+    color: var(--color-grey);
+    text-decoration: none;
+}
+.breadcrumb a:hover {
+    color: var(--color-white);
+    text-decoration: underline;
+}
+.breadcrumb span {
+    margin: 0 5px;
+    color: var(--color-dark-grey); /* Small dot separator */
+}
+.breadcrumb .current {
+    color: var(--color-white);
+    font-weight: 500;
+}
+
+/* Estimated Reading Time */
+.reading-time {
+    font-size: 0.85em;
+    color: var(--color-grey);
+    margin-top: -15px; /* Adjust position relative to title */
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* Toast Notification */
+#toast-notification {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    background-color: var(--color-dark-grey);
+    color: var(--color-white);
+    padding: 15px 25px;
+    border-radius: var(--border-radius-card);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 280px;
+    max-width: 90%;
+    bottom: 20px;
+}
+#toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+}
+
+.toast-icon {
+    font-size: 1.5em;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent); /* Default icon color */
+}
+
+#toast-notification.success .toast-icon { color: var(--toast-success); }
+#toast-notification.error .toast-icon { color: var(--toast-error); }
+#toast-notification.info .toast-icon { color: var(--toast-info); }
+#toast-notification.warning .toast-icon { color: var(--toast-warning); }
+
+
+#toast-message {
+    flex-grow: 1;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.toast-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-grey);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    padding: 5px;
+}
+.toast-close-btn:hover {
+    color: var(--color-white);
+}
+
+/* Modal Styles (Bookmark, Reading List, Glossary) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+}
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background-color: var(--color-dark-grey);
+    padding: 30px;
+    border-radius: var(--border-radius-card);
+    box-shadow: var(--shadow-subtle);
+    width: 90%;
+    max-width: 500px;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-out;
+    position: relative;
+}
+.modal-overlay.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--color-grey);
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: color var(--transition-duration);
+}
+.modal-close-btn:hover {
+    color: var(--color-white);
+}
+
+.modal-content h2 {
+    color: var(--color-accent);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.modal-list {
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px; /* For scrollbar */
+}
+.modal-list li {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-list li a {
+    color: var(--color-white);
+    flex-grow: 1;
+    margin-right: 10px;
+}
+.modal-list li a:hover {
+    color: var(--color-accent);
+}
+.modal-list li .remove-btn {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: color var(--transition-duration);
+}
+.modal-list li .remove-btn:hover {
+    color: #ff3b3b;
+}
+
+.modal-list .no-items-message {
+    color: var(--color-grey);
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+
+/* Glossary Specific Styles */
+#glossary-list dt {
+    font-weight: 600;
+    color: var(--color-white);
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+#glossary-list dd {
+    margin-left: 0;
+    color: var(--color-grey);
+    margin-bottom: 10px;
+}
+
+/* Quiz Placeholder - Dihapus dari HTML, tetapi gaya tetap ada jika diperlukan di masa mendatang */
+.quiz-placeholder {
+    display: none; /* Sembunyikan secara default karena fitur dihapus */
+    background-color: rgba(0, 210, 160, 0.1);
+    border: 1px dashed var(--color-accent);
+    padding: 20px;
+    border-radius: var(--border-radius-card);
+    text-align: center;
+    margin-top: 40px;
+}
+.quiz-placeholder h4 {
+    color: var(--color-accent);
+    margin-bottom: 15px;
+}
+.quiz-placeholder button {
+    background-color: var(--color-accent);
+    color: var(--color-black);
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius-card);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+}
+.quiz-placeholder button:hover {
+    background-color: var(--color-accent-dark);
+    transform: translateY(-2px);
+}
+
+/* AI Portfolio Section - Dihapus dari HTML, tetapi gaya tetap ada jika diperlukan di masa mendatang */
+.ai-portfolio-input-card,
+.ai-portfolio-result-card {
+    display: none; /* Sembunyikan secara default karena fitur dihapus */
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background-color: #fff;
+        color: #000;
+        font-family: 'Times New Roman', serif;
+        font-size: 12pt;
+    }
+    .fab-container, #progress-bar, .reading-controls,
+    #hero-section, .search-container, footer,
+    #chapter-page .sidebar, .chapter-navigation,
+    #toast-notification, .modal-overlay,
+    .category-tabs, #timeline-navigation,
+    .share-section-btn, .reading-progress-circle, .quiz-placeholder,
+    .skip-link, .ai-portfolio-input-card, .ai-portfolio-result-card,
+    .hamburger-menu-btn { /* Sembunyikan tombol hamburger saat print */
+        display: none !important;
+    }
+    .page, .page.active {
+        display: block;
+        opacity: 1;
+        transform: none;
+    }
+    .container, #chapter-page .main-content {
+        max-width: none;
+        margin: 0;
+        padding: 0 20px;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #000;
+        page-break-after: avoid;
+    }
+    p {
+        orphans: 3;
+        widows: 3;
+    }
+    .content-card {
+        background-color: #fff;
+        border: 1px solid #eee;
+        box-shadow: none;
+        page-break-inside: avoid;
+    }
+    #chapter-page .sidebar { /* Pastikan sidebar tidak muncul saat print */
+        display: none !important;
+    }
+    .sidebar-content-wrapper { /* Pastikan konten sidebar tidak muncul saat print */
+        display: none !important;
+    }
+}
+
+/* Responsive Design Breakpoints */
+@media (min-width: 1025px) {
+    /* Penyesuaian khusus untuk desktop */
+    #chapter-page .chapter-page-wrapper {
+        max-width: 1200px; /* Lebar maksimum yang lebih besar untuk konten */
+        margin: 0 auto; /* Pusatkan wrapper di layar desktop yang sangat lebar */
+        padding: 30px; /* Tambahkan padding di sekitar wrapper */
+        gap: 40px; /* Tingkatkan jarak antara sidebar dan main-content */
+    }
+
+    #chapter-page .sidebar {
+        width: 320px; /* Lebar sidebar yang sedikit lebih besar */
+        padding: 30px; /* Padding internal yang lebih nyaman */
+    }
+
+    #chapter-page .main-content {
+        padding: 30px; /* Padding internal yang lebih nyaman */
+        max-width: calc(1200px - 320px - 40px); /* Sesuaikan max-width konten utama */
+    }
+
+    /* Penyesuaian posisi tombol floating untuk desktop */
+    .fab-container {
+        bottom: 40px; /* Turunkan posisi FAB agar tidak terlalu tinggi */
+        right: 40px;
+    }
+
+    #toast-notification {
+        bottom: 100px; /* Di atas FAB */
+    }
+}
+
+@media (max-width: 1440px) {
+    :root {
+        --max-width-content: 1100px;
+    }
+}
+
+@media (max-width: 1024px) {
+    /* Tablet */
+    :root {
+        --max-width-content: 90%;
+        --padding-section: 40px;
+    }
+    #hero-section h1 { font-size: 3.5em; }
+    #hero-section p { font-size: 1.2em; }
+    .scroll-indicator { display: none; } /* Hide on smaller screens */
+
+    /* Garis timeline sudah diatur di #timeline-navigation, tidak perlu override di sini */
+    #timeline-navigation {
+        padding-top: 20px; /* Sesuaikan padding atas agar tidak terlalu mepet */
+        padding-bottom: 20px; /* Sesuaikan padding bawah */
+    }
+
+    #chapter-page .chapter-page-wrapper {
+        flex-direction: column;
+        padding: 0; /* Hapus padding wrapper di mobile */
+        gap: 0; /* Hapus gap di mobile */
+    }
+    #chapter-page .sidebar {
+        width: var(--sidebar-width-mobile); /* Gunakan variabel untuk lebar mobile */
+        position: fixed; /* Jadikan fixed untuk overlay */
+        top: 0;
+        left: 0;
+        height: 100%; /* Ambil tinggi penuh layar */
+        padding-right: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+        margin-bottom: 0;
+        background-color: var(--sidebar-bg-mobile); /* Background untuk overlay */
+        transform: translateX(-100%); /* Sembunyikan di luar layar */
+        transition: transform 0.3s ease-out;
+        z-index: 101; /* Di atas konten utama, di bawah hamburger button */
+        overflow-y: auto; /* Pastikan konten sidebar bisa discroll */
+        box-shadow: 4px 0 15px rgba(0,0,0,0.5); /* Tambahkan bayangan */
+        display: block; /* Pastikan display block untuk transisi */
+        border-radius: 0; /* Hapus border-radius di mobile */
+    }
+
+    #chapter-page .sidebar.active {
+        transform: translateX(0); /* Tampilkan saat aktif */
+    }
+
+    /* Tampilkan tombol hamburger di mobile/tablet */
+    .hamburger-menu-btn {
+        display: flex; /* Tampilkan tombol hamburger */
+        top: 20px; /* Sesuaikan posisi tombol hamburger */
+        left: 20px;
+    }
+
+    /* Sembunyikan sidebar-content-wrapper saat tidak aktif di mobile/tablet */
+    .sidebar-content-wrapper {
+        padding: 80px 20px 20px 20px; /* Padding atas untuk memberi ruang tombol hamburger */
+        display: block; /* Pastikan tetap block untuk transisi */
+    }
+
+    /* Perbaikan: Atur padding-left untuk sidebar-content-wrapper di mobile agar tulisan tidak terlalu pojok kiri */
+    .sidebar-content-wrapper .nav-button,
+    .sidebar-content-wrapper .search-container,
+    .sidebar-content-wrapper .chapter-list-toc {
+        padding-left: 0; /* Reset padding karena sudah ada padding di .sidebar */
+        padding-right: 0; /* Reset padding */
+    }
+
+
+    #chapter-page .main-content {
+        padding-left: 0;
+        border-left: none;
+        padding: 20px; /* Padding default untuk mobile */
+        max-width: 100%; /* Gunakan lebar penuh di mobile */
+        margin: 0; /* Hapus margin auto di mobile */
+        border-radius: 0; /* Hapus border-radius di mobile */
+    }
+}
